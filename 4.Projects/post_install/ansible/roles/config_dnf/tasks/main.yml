@@ -1,0 +1,10 @@
+---
+# tasks file for config dnf
+- name: Configure dnf
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    line: "{{ item }}"
+  with_items:
+    - "fastestmirror=1"
+    - "max_parallel_downloads=10"
+  become: true

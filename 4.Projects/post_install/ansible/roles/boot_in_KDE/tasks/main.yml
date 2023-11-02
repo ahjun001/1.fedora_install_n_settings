@@ -1,0 +1,14 @@
+---
+# tasks file for boot in KDE
+- name: Check if KDE Plasma is installed
+  command: rpm -q plasma-desktop
+  register: plasma_check
+  changed_when: False
+
+- name: Create symbolic link for graphical.target
+  file:
+    src: /usr/lib/systemd/system/graphical.target
+    dest: /etc/systemd/system/default.target
+    state: link
+    force: yes
+  when: plasma_check.stdout != ""

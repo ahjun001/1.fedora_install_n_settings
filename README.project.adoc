@@ -17,12 +17,20 @@ endif::[]
 
 == Summary
 
+After a fresh install, this automates:
+- the initial installation settings are as expected
+- all packages, repos and additional are ready for use, including their settings
 
 == Workflow
 
+Install on baremetal. Confirm and make notes of all settings that are given during installation.
+Install packages & settings.
 
 == Technically
 
+Mostly done with Ansible and bash scripts.
+Settings on cryped vaults both on a key and in the cloud.
 
 == Lessons learned: Technical issues or time over-consuming steps encountered during project & resolutions / mitigations 
 
+Once meant to be achieved for localhost as well as VM. For the moment, only on localhost.

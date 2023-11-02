@@ -1,0 +1,11 @@
+---
+# playbook.yml
+- hosts: all
+  become: true
+  become_method: sudo
+  roles:
+    - "install python3-libselinux"
+    - "config dnf"
+    - "update all packages"
+    - "install KDE Plasma"
+    # - "boot in KDE"

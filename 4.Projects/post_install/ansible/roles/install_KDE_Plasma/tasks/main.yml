@@ -1,0 +1,6 @@
+---
+# tasks file for install KDE Plasma
+- name: Install KDE Plasma Workspaces
+  dnf:
+    name: "@KDE Plasma Workspaces"
+    state: present

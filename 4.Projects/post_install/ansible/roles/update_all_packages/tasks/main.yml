@@ -1,0 +1,6 @@
+---
+# tasks file for update all packages
+- name: Update all packages
+  dnf:
+    name: "*"
+    state: latest
