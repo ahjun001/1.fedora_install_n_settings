@@ -1,7 +1,7 @@
 - name: dnf install nvim
   ansible.builtin.dnf:
-        name: neovim
-        state: latest
+    name: neovim
+    state: latest
 
 - name: Create ~/.config/nvim/ dir if it doesn't exist
   file:
@@ -15,8 +15,7 @@
 - name: Create symbolic link for init.vim
   file:
     src: /home/perubu/Documents/Github/2.1.vim/1.Install/vimrc
-    dest: /home/perubu/.config/nvim/init.vim 
+    dest: /home/perubu/.config/nvim/init.vim
     state: link
     force: yes
     when: not links.stat.exists
-
