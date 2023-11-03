@@ -1,0 +1,51 @@
+To get playbook going first
+update /etc/dnf/dnf.conf
+install Astrill from usbdisk
+update distro
+mkdir ~/Documents/Github
+git clone 1.fedora_install_n_settings
+install ansible
+$ ansible-playbook -i inventories/hosts playbook.yml
+
+
+Localization Keyboard 
++ English(US, alt. intl.)
+- English(US)
+
+TIME&DATE
+Region:Asia City Shanghai use Network Time
+if needed: Network Time Server: 2.fedora.pool.ntp.org pool:check  NTS: not check
+    
+NETWORK&HOSTNAME
+ThinkPad-T16-pj
+
+INSTALLATIONDESTINATION
+Storage Configuration
+Automatic
+
+USER SETTINGS
+Rott Account
+disabled
+
+User Creation
+pu/mu
+
+Check /etc/locale.conf
+install disk
+    $ localctl status
+    System locale: LANG=en_US.UTF-8
+    VC Keymap: US
+    X11 Layout: (unset)
+
+Check online accounts
+OpenDesktop
+
+ownCloud
+
+Nextcloud
+
+Google: includes GMail, Hangouts, google Drive and YouTube
+
+Configure Desktop and Wallpaper
+Wallpaper Wallpaper ype: Plain Color Color 
+
