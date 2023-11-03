@@ -1,0 +1,5 @@
+- name: dnf install multiple packages
+  ansible.builtin.dnf:
+        name:
+          - neovim
+        state: latest
