@@ -4,8 +4,8 @@
   become: true
   become_method: sudo
   roles:
-    - "install python3-libselinux"
-    - "config dnf"
-    - "update all packages"
-    - "install KDE Plasma"
-    # - "boot in KDE"
+    - "install_python3-libselinux"
+    - "config_dnf"
+    - "update_all_packages"
+    - "install_KDE_Plasma"
+    # - "boot_in_KDE"
