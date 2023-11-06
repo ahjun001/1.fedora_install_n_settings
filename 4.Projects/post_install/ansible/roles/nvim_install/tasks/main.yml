@@ -1,10 +1,12 @@
 ---
+# task file for nvim install
+# TODO why 4 tasks? am I doing twice the same thing? and twice as well?
 - name: dnf install nvim
   ansible.builtin.dnf:
     name: neovim
     state: latest
 
-- name: Create ~/.config/nvim/ dir if it doesn't exist
+- name: Register ~/.config/nvim/ exists for test
   ansible.builtin.stat:
     path: /home/perubu/.config/nvim
   register: directory_data
@@ -18,7 +20,7 @@
     owner: perubu
   when: not directory_data.stat.exists
 
-- name: Create symbolic link for init.vim
+- name: Register symbolic link for init.vim for test
   ansible.builtin.stat:
     path: /home/perubu/.config/nvim/init.vim
   register: links

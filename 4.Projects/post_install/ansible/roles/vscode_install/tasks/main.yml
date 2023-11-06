@@ -1,0 +1,20 @@
+---
+# task file for vs_code install
+- name: Import Microsoft GPG key
+  rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+- name: Add Visual Studio Code repository
+  yum_repository:
+    name: vscode
+    description: Visual Studio Code
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+    enabled: yes
+    gpgcheck: yes
+
+- name: Install Visual Studio Code
+  package:
+    name: code
+    state: present
+

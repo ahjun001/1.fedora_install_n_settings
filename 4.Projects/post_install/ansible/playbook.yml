@@ -9,5 +9,7 @@
     # - "update_all_packages"
     # - "install_KDE_Plasma"
     # - "boot_in_KDE"
-    - "nvim_install" 
+    - "vim_install" 
+    # - "nvim_install" 
+    # - "vscode_install"
 
