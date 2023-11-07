@@ -5,24 +5,18 @@
     name: neovim
     state: latest
 
-- name: Register ~/.config/nvim/ exists for test
-  ansible.builtin.stat:
-    path: /home/perubu/.config/nvim
-  register: directory_data
+- name: Test if vimrc exists, fail if it does not
+  ansible.builtin.file:
+    path: "/home/perubu/Documents/Github/2.1.vim/1.Install/vimrc"
+    state: file
 
-- name: Create ~/.config/nvim/ dir
+- name: Ensure ~/.config/nvim/ exists
   ansible.builtin.file:
     path: /home/perubu/.config/nvim
     state: directory
     mode: "0755"
     group: perubu
     owner: perubu
-  when: not directory_data.stat.exists
-
-- name: Register symbolic link for init.vim for test
-  ansible.builtin.stat:
-    path: /home/perubu/.config/nvim/init.vim
-  register: links
 
 - name: Create symbolic link for init.vim
   ansible.builtin.file:
@@ -30,4 +24,3 @@
     dest: /home/perubu/.config/nvim/init.vim
     state: link
     force: yes
-  when: not links.stat.exists

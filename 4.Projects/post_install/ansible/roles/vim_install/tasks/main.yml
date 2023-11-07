@@ -5,27 +5,25 @@
     name: vim-X11
     state: latest
 
-- name: Ensure vimrc exists
+- name: Test if vimrc exists, fail if it does not
   ansible.builtin.file:
     path: "/home/perubu/Documents/Github/2.1.vim/1.Install/vimrc"
     state: file
 
-- name: Ensure .vim/ exists
+- name: Ensure directories exist
   ansible.builtin.file:
-    path: "/home/perubu/.vim"
+    path: "{{ item }}"
     state: directory
+  loop:
+    - "/home/perubu/.vim"
+    - "/home/perubu/.vim/swap"
+    - "/home/perubu/.vim/backup"
+    - "/home/perubu/.vim/undo"
+    - "/home/perubu/.vim/view"
 
-- name: Check if init.vim exists
-  ansible.builtin.stat:
-    path: /home/perubu/.config/nvim/init.vim
-  register: links
-
-- name: Create symbolic link for init.vim
+- name: Create symbolic link for vimrc
   ansible.builtin.file:
     src: /home/perubu/Documents/Github/2.1.vim/1.Install/vimrc
-    dest: /home/perubu/.config/nvim/init.vim
+    dest: /home/perubu/.vim/vimrc
     state: link
     force: yes
-  when: not links.stat.exists
-
-# test if will install link if link is broken
