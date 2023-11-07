@@ -1,6 +1,8 @@
+---
+# tasks file to install dnf packages without having anything to set
 - name: dnf install multiple packages
   ansible.builtin.dnf:
-        name:
-          - neovim
-          - xclip
-        state: latest
+    name:
+      - neovim
+      - xclip
+    state: latest

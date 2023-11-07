@@ -4,12 +4,12 @@
   become: true
   become_method: sudo
   roles:
-    # - "install_python3-libselinux"
+    # - "libselinux_install"
     # - "config_dnf"
     # - "update_all_packages"
-    # - "install_KDE_Plasma"
-    # - "boot_in_KDE"
-    - "vim_install" 
-    # - "nvim_install" 
+    # - "KDE_Plasma_install" if needed
+    # - "boot_in_KDE" if needed
+    - "vim_install"
+    # - "nvim_install"
     # - "vscode_install"
-
+    # - "chrome_install"

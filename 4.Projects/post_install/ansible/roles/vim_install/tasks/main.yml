@@ -1,8 +1,8 @@
 ---
 # task file for vim install
-- name: dnf install vim
+- name: dnf install vim-X11
   ansible.builtin.dnf:
-    name: vim
+    name: vim-X11
     state: latest
 
 - name: Ensure vimrc exists
@@ -14,7 +14,7 @@
   ansible.builtin.file:
     path: "/home/perubu/.vim"
     state: directory
-  
+
 - name: Check if init.vim exists
   ansible.builtin.stat:
     path: /home/perubu/.config/nvim/init.vim
@@ -28,3 +28,4 @@
     force: yes
   when: not links.stat.exists
 
+# test if will install link if link is broken

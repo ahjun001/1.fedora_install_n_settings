@@ -1,6 +1,5 @@
 ---
 # task file for nvim install
-# TODO why 4 tasks? am I doing twice the same thing? and twice as well?
 - name: dnf install nvim
   ansible.builtin.dnf:
     name: neovim
@@ -15,7 +14,7 @@
   ansible.builtin.file:
     path: /home/perubu/.config/nvim
     state: directory
-    mode: '0755'
+    mode: "0755"
     group: perubu
     owner: perubu
   when: not directory_data.stat.exists
@@ -32,4 +31,3 @@
     state: link
     force: yes
   when: not links.stat.exists
-
