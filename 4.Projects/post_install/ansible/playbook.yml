@@ -7,8 +7,6 @@
     # - "libselinux_install"
     # - "config_dnf"
     # - "update_all_packages"
-    # - "KDE_Plasma_install" if needed
-    # - "boot_in_KDE" if needed
     - "vim_install"
     - "nvim_install"
     # - "vscode_install"

@@ -10,16 +10,19 @@
     path: "/home/perubu/Documents/Github/2.1.vim/1.Install/vimrc"
     state: file
 
-- name: Ensure directories exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-  loop:
-    - "/home/perubu/.vim"
-    - "/home/perubu/.vim/swap"
-    - "/home/perubu/.vim/backup"
-    - "/home/perubu/.vim/undo"
-    - "/home/perubu/.vim/view"
+# - name: Ensure directories exist, create if it does not
+#   ansible.builtin.file:
+#     path: "{{ item }}"
+#     state: directory
+#     mode: "0755"
+#     group: perubu
+#     owner: perubu
+#   loop:
+#     - "/home/perubu/.vim"
+#     - "/home/perubu/.vim/swap"
+#     - "/home/perubu/.vim/backup"
+#     - "/home/perubu/.vim/undo"
+#     - "/home/perubu/.vim/view"
 
 - name: Create symbolic link for vimrc
   ansible.builtin.file:
