@@ -4,10 +4,12 @@
   become: true
   become_method: sudo
   roles:
-    # - "libselinux_install"
+    # - "python3_libselinux_install"
     # - "config_dnf"
     # - "update_all_packages"
-    - "vim_install"
-    - "nvim_install"
+    # - "ibus_chinese_ime"
+    # - "vim_install"
+    # - "nvim_install"
     # - "vscode_install"
     # - "chrome_install"
+    - "brave_install"

@@ -4,5 +4,6 @@
   ansible.builtin.dnf:
     name:
       - neovim
-      - xclip
+      - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
+      - htop # Todo: learn & update flashcard
     state: latest

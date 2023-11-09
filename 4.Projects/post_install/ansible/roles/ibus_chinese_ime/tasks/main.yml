@@ -1,0 +1,35 @@
+---
+# task file to set IME for Chinese
+- name: Set IBus as the input method engine
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    line: "GTK_IM_MODULE=ibus"
+    state: present
+
+- name: Log out and log in again
+  ansible.builtin.shell: "dbus-send --type=method_call --dest=org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout int32:0 int32:0 int32:0"
+
+- name: Add "Chinese - Intelligent pinyin" as an input method
+  ansible.builtin.shell: "ibus-setup"
+  args:
+    stdin: |
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+a
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin/xdotool key --clearmodifiers Alt+u
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+u
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin/xdotool key --clearmodifiers Alt+u
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin/xdotool key --clearmodifiers Alt+u
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin/xdotool key --clearmodifiers Alt+u
+      /usr/bin/xdotool key --clearmodifiers Alt+o
+      /usr/bin/xdotool key --clearmodifiers Alt+i
+      /usr/bin
