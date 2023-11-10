@@ -3,7 +3,7 @@
 - name: dnf install multiple packages
   ansible.builtin.dnf:
     name:
-      - neovim
       - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
       - htop # Todo: learn & update flashcard
+      - gparted
     state: latest

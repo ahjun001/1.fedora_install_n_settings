@@ -4,6 +4,7 @@
   ansible.builtin.lineinfile:
     path: /etc/dnf/dnf.conf
     line: "{{ item }}"
+    state: present
   with_items:
     - "fastestmirror=1"
     - "max_parallel_downloads=10"
