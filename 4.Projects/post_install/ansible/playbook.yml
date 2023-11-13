@@ -6,6 +6,7 @@
   roles:
     - "config_dnf"
     - "update_all_packages"
+    - "dnf_many_install"
     # - "ibus_chinese_ime"
     - "vim_install"
     - "nvim_install"
