@@ -14,7 +14,7 @@ fi
 
 # install git and ansible
 sudo dnf update -y # maybe don't need it
-sudo dnf install git ansible -y
+sudo dnf install git gh ansible -y
 
 # will install Astrill if needed and then exit to set it up, if not, will pursue
 rpm -q astrill >/dev/null || (
@@ -30,6 +30,7 @@ for repo in \
     ahjun001 \
     0.template \
     1.fedora_install_n_settings \
+    2.1.ansible \
     2.1.linux \
     2.1.gh \
     2.1.vim \
@@ -46,3 +47,5 @@ done
 cd /home/perubu/Documents/Github/1.fedora_install_n_settings/4.Projects/post_install/ansible
 
 ansible-playbook -Ki inventories/hosts playbook.yml
+
+gh auth setup-git

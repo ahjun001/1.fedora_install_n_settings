@@ -6,4 +6,6 @@
       - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
       - htop # Todo: learn & update flashcard
       - gparted
+      - gnome-disk-utility
+      - neofetch
     state: latest
