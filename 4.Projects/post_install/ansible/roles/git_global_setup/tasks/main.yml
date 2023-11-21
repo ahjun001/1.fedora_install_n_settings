@@ -1,0 +1,19 @@
+---
+# task file for git_global_setup
+- name: Ensure git is present
+  ansible.builtin.dnf:
+    name: git
+    state: present
+  become: true
+
+- name: Configure Git with GitHub username
+  ansible.builtin.git_config:
+    scope: global
+    name: user.name
+    value: "{{ github_username }}"
+
+- name: Configure Git with GitHub email
+  ansible.builtin.git_config:
+    scope: global
+    name: user.email
+    value: "{{ github_email }}"

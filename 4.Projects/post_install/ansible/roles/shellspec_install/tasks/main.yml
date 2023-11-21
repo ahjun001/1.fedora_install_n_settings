@@ -1,0 +1,32 @@
+---
+# tasks file for installing shellspec
+- name: Check if ShellSpec is already installed
+  command: which shellspec
+  register: shellspec_installed
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
+- name: Download ShellSpec install script
+  get_url:
+    url: https://git.io/shellspec
+    dest: /tmp/shellspec-install.sh
+    mode: "0755"
+  when: shellspec_installed.rc != 0
+
+- name: Execute ShellSpec install script
+  command: /tmp/shellspec-install.sh --yes
+  args:
+    creates: /usr/local/bin/shellspec
+  when: shellspec_installed.rc != 0
+
+- name: Verify ShellSpec installation
+  command: shellspec --version
+  register: shellspec_version
+  changed_when: false
+  when: shellspec_installed.rc != 0
+
+- name: Print ShellSpec version
+  debug:
+    msg: "ShellSpec version installed: {{ shellspec_version.stdout }}"
+  when: shellspec_installed.rc != 0

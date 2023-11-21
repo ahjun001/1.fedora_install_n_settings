@@ -1,15 +1,15 @@
 ---
 - name: Install snapper
-  dnf:
+  ansible.builtin.dnf:
     name: snapper
     state: latest
 
 - name: Create snapshot of root
-  command: snapper -c root create
+  command: snapper -c root create-config /
   args:
     creates: /.snapshots
 
 - name: Create snapshot of home
-  command: snapper -c home create
+  command: snapper -c home create-config /home
   args:
     creates: /home/.snapshots

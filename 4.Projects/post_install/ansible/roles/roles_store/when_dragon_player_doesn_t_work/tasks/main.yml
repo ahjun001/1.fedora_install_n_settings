@@ -1,0 +1,8 @@
+---
+# task file for when_dragon_player_doesn_t_work
+- name: dnf install multiple packages
+  ansible.builtin.dnf:
+    name:
+      - mpv
+      - mplayer
+      # - haruna  maybe not necessary

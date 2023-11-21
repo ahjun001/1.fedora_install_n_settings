@@ -2,7 +2,7 @@
 # task file for snapper_install
 
 - name: Install snapper
-  dnf:
+  ansible.builtin.dnf:
     name: snapper
     state: latest
 

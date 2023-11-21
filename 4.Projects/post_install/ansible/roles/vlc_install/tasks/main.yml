@@ -1,0 +1,14 @@
+---
+# task file for vlc_install
+- name: Get Fedora version
+  command: rpm -E %fedora
+  register: fedora_version
+
+# command: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version.stdout }}.noarch.rpm
+- name: Install RPM Fusion repository
+  ansible.builtin.dnf:
+    name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version.stdout }}.noarch.rpm
+
+- name: Install VLC
+  ansible.builtin.dnf:
+    name: vlc

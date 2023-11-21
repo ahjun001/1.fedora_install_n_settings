@@ -1,0 +1,29 @@
+---
+# task file for debug
+# - name: Use a secret variable 1
+#   debug:
+#     msg: "{{ github_username }}"
+
+# - name: Use a secret variable 2
+#   debug:
+#     msg: "{{ github_email }}"
+
+- name: Check the current user
+  command: whoami
+  register: whoami_output
+  become: false
+
+- name: Print the current user
+  debug:
+    var: whoami_output.stdout
+  become: false
+
+- name: Print the HOME environment variable
+  debug:
+    var: ansible_env.HOME
+  become: false
+
+# - name: Print environment variables
+#   debug:
+#     var: ansible_env
+#   become: false
