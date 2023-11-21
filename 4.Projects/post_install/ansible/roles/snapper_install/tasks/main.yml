@@ -3,13 +3,16 @@
   ansible.builtin.dnf:
     name: snapper
     state: latest
+  become: true
 
 - name: Create snapshot of root
   command: snapper -c root create-config /
   args:
     creates: /.snapshots
+  become: true
 
 - name: Create snapshot of home
   command: snapper -c home create-config /home
   args:
     creates: /home/.snapshots
+  become: true

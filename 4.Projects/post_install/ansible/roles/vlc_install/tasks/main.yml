@@ -8,7 +8,9 @@
 - name: Install RPM Fusion repository
   ansible.builtin.dnf:
     name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version.stdout }}.noarch.rpm
+  become: true
 
 - name: Install VLC
   ansible.builtin.dnf:
     name: vlc
+  become: true

@@ -5,6 +5,7 @@
   ansible.builtin.dnf:
     name: dnf-plugins-core
     state: present
+  become: true
 
 - name: Add brave-browser repository
   yum_repository:
@@ -12,11 +13,13 @@
     description: Brave Browser
     baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
     enabled: yes
+  become: true
 
 - name: Import Brave browser GPG key
   rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     state: present
+  become: true
 
 - name: Tweak brave-browser.repo
   ansible.builtin.lineinfile:
@@ -32,19 +35,4 @@
   ansible.builtin.dnf:
     name: brave-browser
     state: latest
-#
-# - name: Install dnf-plugins-core
-#   ansible.builtin.dnf:
-#     name: dnf-plugins-core
-#     state: present
-
-# - name: Add Brave browser repository
-#   ansible.builtin.shell: sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-
-# - name: Import Brave browser GPG key
-#   ansible.builtin.shell: sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-
-# - name: Install Brave browser
-#   ansible.builtin.dnf:
-#     name: brave-browser
-#     state: latest
+  become: true

@@ -1,26 +1,29 @@
 ---
 # playbook.yml
-# run with:  $ ansible-playbook -Ki hosta playbook.yml --ask-vault-pass
+# run with:  $ ansible-playbook -Ki hosts playbook.yml --ask-vault-pass
 - hosts: all
   remote_user: perubu
   become_method: sudo
-  become: false  # the only way for git_global_setup to work in regular user instead of root
+  become: false # the only way for git_global_setup to work in regular user instead of root
   vars_files:
-    # - /run/media/perubu/USB_mimi/mimi/gh_mimi.yml
-    - /mnt/TPad_mimi/mimi/gh_mimi.yml
+    - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
+    - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
   roles:
     # - debug
     # - config_dnf
     # - update_all_packages
     # - snapper_install
     # - update_full_name
-    - dnf_many_install
-    # - ibus_chinese_ime
+    # - dnf_many_install
+    # - ibus_chinese_ime  # careful, this will log out -- loosing all non saved data
     # - vim_install
     # - nvim_install
     # - vscode_install
     # - chrome_install
     # - brave_install
     # - vlc_install
-    # - git_global_setup # requires become: false in the playing playbook
+    - key_vault_pwd_setup
+    - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install

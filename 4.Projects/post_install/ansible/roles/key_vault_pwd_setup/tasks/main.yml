@@ -1,0 +1,14 @@
+---
+# task file for key_vault_pwd_setup
+
+- name: Check if Vault password file exists
+  stat:
+    path: "/tmp/.vault_pass.txt"
+  register: vault_file
+
+- name: Create Vault password file on local machine
+  copy:
+    content: "{{ vault_password }}"
+    dest: "/tmp/.vault_pass.txt"
+    mode: '0600'
+  when: not vault_file.stat.exists

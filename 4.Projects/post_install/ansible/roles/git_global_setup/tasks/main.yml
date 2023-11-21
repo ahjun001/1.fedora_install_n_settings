@@ -17,3 +17,15 @@
     scope: global
     name: user.email
     value: "{{ github_email }}"
+
+- name: Configure Git with editor
+  ansible.builtin.git_config:
+    scope: global
+    name: core.editor
+    value: nvim
+
+- name: Configure Git with merge tool
+  ansible.builtin.git_config:
+    scope: global
+    name: merge.tool
+    value: kompare

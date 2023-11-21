@@ -4,6 +4,7 @@
   ansible.builtin.dnf:
     name: vim-X11
     state: latest
+  become: true
 
 - name: Test if vimrc exists, fail if it does not
   ansible.builtin.file:

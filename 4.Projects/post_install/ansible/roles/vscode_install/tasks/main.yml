@@ -4,6 +4,7 @@
   rpm_key:
     state: present
     key: https://packages.microsoft.com/keys/microsoft.asc
+  become: true
 
 - name: Add Visual Studio Code repository
   yum_repository:
@@ -12,8 +13,10 @@
     baseurl: https://packages.microsoft.com/yumrepos/vscode
     enabled: yes
     gpgcheck: yes
+  become: true
 
 - name: Install Visual Studio Code
   package:
     name: code
     state: present
+  become: true
