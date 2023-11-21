@@ -4,12 +4,14 @@
   become: true
   become_method: sudo
   roles:
-    - "config_dnf"
-    - "update_all_packages"
-    - "dnf_many_install"
+    # - "config_dnf"
+    # - "update_all_packages"
+    - "snapper_install"
+    # - "update_full_name"
+    # - "dnf_many_install"
     # - "ibus_chinese_ime"
-    - "vim_install"
-    - "nvim_install"
-    - "vscode_install"
-    - "chrome_install"
-    - "brave_install"
+    # - "vim_install"
+    # - "nvim_install"
+    # - "vscode_install"
+    # - "chrome_install"
+    # - "brave_install"

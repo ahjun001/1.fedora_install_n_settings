@@ -8,4 +8,5 @@
       - gparted
       - gnome-disk-utility
       - neofetch
+      - btrfs-assistant
     state: latest

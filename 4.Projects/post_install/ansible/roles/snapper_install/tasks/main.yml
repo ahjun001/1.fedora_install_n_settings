@@ -1,0 +1,15 @@
+---
+- name: Install snapper
+  dnf:
+    name: snapper
+    state: latest
+
+- name: Create snapshot of root
+  command: snapper -c root create
+  args:
+    creates: /.snapshots
+
+- name: Create snapshot of home
+  command: snapper -c home create
+  args:
+    creates: /home/.snapshots
