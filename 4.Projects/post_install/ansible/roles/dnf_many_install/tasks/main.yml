@@ -9,7 +9,8 @@
       - gparted
       - gnome-disk-utility
       - neofetch
-      - btrfs-assistant
+      - btrfs-assistant # Fedora only
+      - prename # Fedora only
       - ffmpeg
       - hunspell-fr
       - libreoffice-langpack-fr
