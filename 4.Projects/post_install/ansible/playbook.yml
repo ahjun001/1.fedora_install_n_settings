@@ -11,6 +11,7 @@
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
   roles:
+    # - key_vault_pwd_setup
     # - config_dnf
     # - update_all_packages
     # - snapper_install
@@ -23,8 +24,8 @@
     # - chrome_install
     # - brave_install
     # - vlc_install
-    - key_vault_pwd_setup
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
+    - system_settings
 
-    - debug
+    # - debug

@@ -18,4 +18,5 @@
       - libreoffice-grammalecte
       - meld # for Gnome
       - kompare # for KDE Plasma
+      - torbrowser-launcher.noarch
     state: latest

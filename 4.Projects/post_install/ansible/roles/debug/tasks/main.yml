@@ -1,40 +1,45 @@
 ---
 # task file for debug
-- name: Use a secret variable 1
+- name: Display github_username
   debug:
     msg: "{{ github_username }}"
 
-- name: Use a secret variable 2
+- name: Display github_email
   debug:
     msg: "{{ github_email }}"
 
-- name: Use a secret variable 3
+- name: Display "{{ vault_password }}"
   debug:
     msg: "{{ vault_password }}"
 
-- name: Display vault_pass.txt
-  command: cat /tmp/.vault_pass.txt
-  register: vault_pass_txt
+- name: Register user - whoami_output
+  command: whoami
+  register: whoami_output
+  become: false
 
-- name: Print vault_pass_txt to console
+- name: Display the current user -- whoami_output.stdout
   debug:
-    msg: "{{vault_pass_txt.stdout}}"
-# - name: Check the current user
-#   command: whoami
-#   register: whoami_output
-#   become: false
+    var: whoami_output.stdout
+  become: false
 
-# - name: Print the current user
+- name: Display "{{ ansible_env.HOME }}"
+  debug:
+    msg: "{{ ansible_env.HOME }}"
+
+- name: Display ansible_user
+  debug:
+    # var: ansible_user
+    msg: "{{ ansible_user }}"
+
+# - name: Display vault_pass.txt
+#   command: cat /tmp/.vault_pass.txt
+#   register: vault_pass_txt
+
+# - name: Display vault_pass_txt to console
 #   debug:
-#     var: whoami_output.stdout
-#   become: false
-
-# - name: Print the HOME environment variable
-#   debug:
-#     var: ansible_env.HOME
-#   become: false
-
-# - name: Print environment variables
+#     msg: "{{vault_pass_txt.stdout}}"
+#
+# - name: Display environment variables
 #   debug:
 #     var: ansible_env
 #   become: false
