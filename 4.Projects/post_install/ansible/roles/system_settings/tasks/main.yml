@@ -22,10 +22,15 @@
       - group: kwin
         key: "Walk Through Windows of Current Application (Reverse)"
         value: "Alt+Shift+T,Alt+~,Walk Through Windows of Current Application (Reverse)"
-# - name: Reload KDE Plasma configuration 1
-#   ansible.builtin.command: qdbus org.kde.KWin /KWin reconfigure
 
-# - name: Reload KDE Plasma configuration 2
-#   ansible.builtin.command: kquitapp5 plasmashell 2>/dev/null && kstart plasmashell 2>/dev/null && echo ok
+- name: Reload KDE Plasma configuration 1
+  ansible.builtin.command: qdbus org.kde.KWin /KWin reconfigure
 
-# todo: Reload KDE Plasma configuration : none of the previous methods work, need to log out and log in again
+- name: Quit kglobalaccel to apply changes
+  ansible.builtin.command: kquitapp5 kglobalaccel
+  ignore_errors: yes # kquitapp5 may fail if kglobalaccel is not running
+
+- name: Restart kglobalaccel
+  ansible.builtin.command: kglobalaccel5
+  async: 10 # Run the task asynchronously
+  poll: 0 # Fire and forget, don't wait for completion
