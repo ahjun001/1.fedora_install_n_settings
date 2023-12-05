@@ -15,14 +15,52 @@
     global: yes
     state: latest
 
-- name: Create Trello webapp
+- name: Create Cnrtl webapp
   vars:
-    app_name: "Trello"
-    webapp_url: "{{ trello_weblink }}"
+    app_name: "Cnrtl"
+    webapp_url: "https://cnrtl.fr/definition/"
     icon_path: "/home/perubu/.local/share/applications/icons/cnrtl.png"
   become: no
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
 
-      
+- name: Create Trello webapp
+  vars:
+    app_name: "Trello"
+    webapp_url: "{{ trello_weblink }}"
+    icon_path: "/home/perubu/.local/share/applications/icons/trello.png"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create le Conjugueur webapp
+  vars:
+    app_name: "le Conjugueur"
+    webapp_url: "https://leconjugueur.lefigaro.fr/"
+    icon_path: "/home/perubu/.local/share/applications/icons/leConjugueur.png"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create WhatsApp webapp
+  vars:
+    app_name: "WhatsApp"
+    webapp_url: "https://web.whatsapp.com/"
+    icon_path: "/home/perubu/.local/share/applications/icons/whatsapp.webp"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create YouTube webapp
+  vars:
+    app_name: "YouTube"
+    webapp_url: "https://youtube.com/"
+    icon_path: "/home/perubu/.local/share/applications/icons/youTube.png"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
