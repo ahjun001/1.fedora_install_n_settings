@@ -1,0 +1,7 @@
+---
+# task file for dot_bashrc_modif
+- name: Add alias to ~/.bashrc
+  lineinfile:
+    path: ~/.bashrc
+    line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '"
+    state: present

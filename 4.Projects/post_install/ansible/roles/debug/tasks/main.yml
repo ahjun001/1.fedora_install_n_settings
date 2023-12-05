@@ -1,16 +1,20 @@
 ---
 # task file for debug
-- name: Display github_username
-  debug:
-    msg: "{{ github_username }}"
+# - name: Display github_username
+#   debug:
+#     msg: "{{ github_username }}"
 
-- name: Display github_email
-  debug:
-    msg: "{{ github_email }}"
+# - name: Display github_email
+#   debug:
+#     msg: "{{ github_email }}"
 
 - name: Display "{{ vault_password }}"
   debug:
     msg: "{{ vault_password }}"
+
+- name: Display "{{ trello_weblink }}"
+  debug:
+    msg: "{{ trello_weblink }}"
 
 - name: Register user - whoami_output
   command: whoami
