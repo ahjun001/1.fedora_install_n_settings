@@ -16,3 +16,21 @@
   args:
     creates: /home/.snapshots
   become: true
+
+- name: Ensure /etc/snapper/filters directory exists
+  become: true
+  file:
+    path: /etc/snapper/filters
+    state: directory
+    mode: "0755"
+
+- name: Create /etc/snapper/filters/excluded.txt
+  become: true
+  copy:
+    dest: /etc/snapper/filters/excluded.txt
+    content: |
+      # files excluded for `snapper status <m>..<n>`
+      /var/log/*
+    owner: root
+    group: root
+    mode: "0644"
