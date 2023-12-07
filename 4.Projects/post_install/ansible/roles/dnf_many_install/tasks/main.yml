@@ -19,4 +19,5 @@
       - meld # for Gnome
       - kompare # for KDE Plasma
       - torbrowser-launcher.noarch
+      - numberstation
     state: latest

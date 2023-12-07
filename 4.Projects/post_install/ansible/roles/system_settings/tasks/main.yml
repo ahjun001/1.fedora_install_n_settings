@@ -23,6 +23,49 @@
         key: "Walk Through Windows of Current Application (Reverse)"
         value: "Alt+Shift+T,Alt+~,Walk Through Windows of Current Application (Reverse)"
 
+- name: Settings / Personalization / Regional Settings / 1
+  community.general.kdeconfig:
+    path: "{{ ansible_env.HOME }}/.config/KDE/Sonnet.conf"
+    values:
+      - group: General
+        key: "defaultLanguage"
+        value: "en_US"
+      - group: General
+        key: "preferredLanguages"
+        value: "en_US-w_accents, fr_FR"
+
+- name: Settings / Personalization / Regional Settings / 2
+  community.general.kdeconfig:
+    path: "{{ ansible_env.HOME }}/.config/plasma-localrc"
+    values:
+      - group: Formats
+        key: "LANG"
+        value: "en_US.UTF-8"
+      - group: Formats
+        key: "LC_ADDRESS"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_MEASUREMENT"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_MONETARY"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_NAME"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_NAME"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_PAPER"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_TELEPHONE"
+        value: "en_BE.UTF-8"
+      - group: Formats
+        key: "LC_TIME"
+        value: "en_BE.UTF-8"
+
 - name: Reload KDE Plasma configuration 1
   ansible.builtin.command: qdbus org.kde.KWin /KWin reconfigure
 
