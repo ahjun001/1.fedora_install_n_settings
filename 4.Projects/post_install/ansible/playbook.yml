@@ -18,7 +18,7 @@
     - key_vault_pwd_setup
     # - config_dnf
     # - update_all_packages
-    - snapper_install
+    # - snapper_install
     # - update_full_name
     # - dnf_many_install
     # - ibus_chinese_ime  # careful, this will log out -- loosing all non saved data
@@ -32,6 +32,6 @@
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
     # - system_settings
-    # - webapps_install
+    - webapps_install
 
     # - debug

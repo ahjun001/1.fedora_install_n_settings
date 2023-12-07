@@ -1,5 +1,6 @@
 ---
 # task file for webapps_install
+# Don´t use spaces in app_name , it will be used to create a directory, and then won't make the script idempotent
 - name: Ensure nodejs and npm are installed
   become: true
   ansible.builtin.dnf:
@@ -19,48 +20,52 @@
   vars:
     app_name: "Cnrtl"
     webapp_url: "https://cnrtl.fr/definition/"
-    icon_path: "/home/perubu/.local/share/applications/icons/cnrtl.png"
   become: no
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
 
 - name: Create Trello webapp
   vars:
     app_name: "Trello"
     webapp_url: "{{ trello_weblink }}"
-    icon_path: "/home/perubu/.local/share/applications/icons/trello.png"
   become: no
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
 
 - name: Create le Conjugueur webapp
   vars:
-    app_name: "le Conjugueur"
+    app_name: "le_Conjugueur"
     webapp_url: "https://leconjugueur.lefigaro.fr/"
-    icon_path: "/home/perubu/.local/share/applications/icons/leConjugueur.png"
   become: no
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
 
 - name: Create WhatsApp webapp
   vars:
     app_name: "WhatsApp"
     webapp_url: "https://web.whatsapp.com/"
-    icon_path: "/home/perubu/.local/share/applications/icons/whatsapp.webp"
   become: no
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
 
 - name: Create YouTube webapp
   vars:
     app_name: "YouTube"
     webapp_url: "https://youtube.com/"
-    icon_path: "/home/perubu/.local/share/applications/icons/youTube.png"
   become: no
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' --icon '{{ icon_path }}' '{{ webapp_url }}' || exit"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create Google search webapp
+  vars:
+    app_name: "GSearch"
+    webapp_url: "https://www.google.com.hk/?hl=en-US&fg=1"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
