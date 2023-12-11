@@ -78,3 +78,12 @@
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create Speedtest webapp
+  vars:
+    app_name: "Speedtest"
+    webapp_url: "https://www.speedtest.net/"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"

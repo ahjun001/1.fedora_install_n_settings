@@ -31,7 +31,7 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    - system_settings
+    # - system_settings
     # - webapps_install
 
     # - debug
