@@ -1,34 +1,34 @@
----
 # tasks to install brave
-
 - name: Install dnf-plugins-core
   ansible.builtin.dnf:
     name: dnf-plugins-core
     state: present
   become: true
 
-- name: Add brave-browser repository
+- name: Check brave-browser repository status and enable it
   yum_repository:
-    name: brave-browser
+    name: brave-browser-new # Choose a different name for new repository
+    state: present
     description: Brave Browser
     baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
-    enabled: yes
+    gpgcheck: yes
+  register: repo_status
   become: true
+
+- name: Enable brave-browser repository if not already enabled
+  yum_repository:
+    name: brave-browser-new
+    description: Brave Browser
+    state: present
+    baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
+    gpgcheck: yes
+  become: true
+  when: not repo_status.state == True
 
 - name: Import Brave browser GPG key
   rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     state: present
-  become: true
-
-- name: Tweak brave-browser.repo
-  ansible.builtin.lineinfile:
-    path: /etc/yum.repos.d/brave-browser.repo
-    line: "{{ item }}"
-    insertbefore: "^$"
-    state: present
-  with_items:
-    - autorefresh = 1
   become: true
 
 - name: Install Brave browser

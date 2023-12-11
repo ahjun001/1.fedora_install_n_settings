@@ -1,20 +1,19 @@
 ---
 # tasks file to install google-chrome
 - name: Install Third Party Repositories
-  become: yes
+  become: true
   ansible.builtin.dnf:
     name: fedora-workstation-repositories
     state: present
-  become: true
 
 - name: Enable the Google Chrome repo
-  become: yes
-  command: dnf config-manager --set-enabled google-chrome
   become: true
+  command: dnf config-manager --set-enabled google-chrome
+  args:
+    creates: "/etc/yum.repos.d/google-chrome.repo"
 
 - name: Install Google Chrome
-  become: yes
+  become: true
   ansible.builtin.dnf:
     name: google-chrome-stable
     state: present
-  become: true

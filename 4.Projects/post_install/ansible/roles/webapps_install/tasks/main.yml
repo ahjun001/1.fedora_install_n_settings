@@ -87,3 +87,12 @@
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create DeepAi chat
+  vars:
+    app_name: "DeepAi"
+    webapp_url: "https://deepai.org/chat"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"

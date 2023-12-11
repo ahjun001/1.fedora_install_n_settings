@@ -10,10 +10,11 @@
   become: false # the only way for git_global_setup to work in regular user instead of root
   vars_files:
     - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
-    # - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
+    - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
     - /mnt/TPad_mimi/mimi_in_the_cloud/trello_mimi.yml
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     - key_vault_pwd_setup
     # - config_dnf
@@ -21,17 +22,18 @@
     # - snapper_install
     # - update_full_name
     # - dnf_many_install
-    # - ibus_chinese_ime  # careful, this will log out -- loosing all non saved data
+    # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
     # - vscode_install
     # - chrome_install
     # - brave_install
-    # - vlc_install
-    # - git_global_setup # requires become: false in the playing playbook
-    # - shellspec_install
-    # - system_settings
-    # - webapps_install
+    - vlc_install
+    - git_global_setup # requires become: false in the playing playbook
+    - shellspec_install
+    - system_settings
+    - webapps_install
+    - anki_install
 
     # - debug
