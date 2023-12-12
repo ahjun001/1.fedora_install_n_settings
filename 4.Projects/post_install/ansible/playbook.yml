@@ -17,22 +17,22 @@
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     - key_vault_pwd_setup
+    # - system_settings # not idempotent
+    # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - config_dnf
     # - update_all_packages
-    # - snapper_install
+    - snapper_install
     # - update_full_name
     # - dnf_many_install
-    # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
     # - vscode_install
     # - chrome_install
     # - brave_install
-    - vlc_install
+    # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    # - system_settings
     # - webapps_install
     # - anki_install
 

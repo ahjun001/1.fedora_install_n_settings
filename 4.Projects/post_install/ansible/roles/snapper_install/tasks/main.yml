@@ -30,7 +30,20 @@
     dest: /etc/snapper/filters/excluded.txt
     content: |
       # files excluded for `snapper status <m>..<n>`
+
+      # exclude log files
       /var/log/*
+
+      # exlude Anki media files
+      /home/perubu/.local/share/Anki2/pj/collection.media/*
+
+      # Exclude temporary files
+      /tmp/*
+
+      # Exclude cache files
+      /home/perubu/.cache/*
+
+      #
     owner: root
     group: root
     mode: "0644"

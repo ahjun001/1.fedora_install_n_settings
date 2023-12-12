@@ -1,41 +1,10 @@
 ---
-# task file for anki_install
-- name: Install zstd
-  become: true
-  dnf:
-    name: zstd
-    state: present
+# task file to check if Anki is installed
+- name: Check if Anki is already installed
+  stat:
+    path: /usr/local/bin/anki
+  register: anki_installed
 
-- name: Get the latest Anki release tag from GitHub
-  uri:
-    url: https://api.github.com/repos/ankitects/anki/releases/latest
-    return_content: yes
-    method: GET
-    headers:
-      Accept: application/vnd.github.v3+json
-  register: anki_release
-
-- name: Set Anki download URL
-  set_fact:
-    anki_url: "https://github.com/ankitects/anki/releases/download/{{ anki_release.json.tag_name }}/anki-{{ anki_release.json.tag_name }}-linux-qt6.tar.zst"
-
-- name: Download Anki
-  get_url:
-    url: "{{ anki_url }}"
-    dest: /tmp/anki-latest-linux-qt6.tar.zst
-    mode: "0644"
-
-- name: Extract Anki
-  unarchive:
-    src: /tmp/anki-latest-linux-qt6.tar.zst
-    dest: /tmp
-    remote_src: yes
-    extra_opts: ["--use-compress-program=unzstd"]
-    creates: "/tmp/anki-{{ anki_release.json.tag_name }}-linux-qt6/"
-
-- name: Run Anki installation script
-  become: true
-  command: sh install.sh
-  args:
-    chdir: "/tmp/anki-{{ anki_release.json.tag_name }}-linux-qt6"
-    creates: "/usr/local/bin/anki"
+- name: Include Anki installation playbook
+  include_tasks: anki_install.yml
+  when: anki_installed.stat.exists == False
