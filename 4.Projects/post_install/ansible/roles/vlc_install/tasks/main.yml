@@ -1,13 +1,39 @@
 ---
 # task file for vlc_install
-- name: Get Fedora version
-  command: rpm -E %fedora
-  register: fedora_version
 
+- name: Check Fedora version temp file existence
+  stat:
+    path: /tmp/fedora_version
+  register: tmp_file
+
+# If temp file does not exist 
+- name: Retrieve Fedora version from system (would run each time, so not idempotent)
+  command: rpm -E %fedora
+  register: retrieved_version
+  when: tmp_file.stat.exists == False
+
+- name: Set Fedora version
+  set_fact:
+    fedora_version: "{{ retrieved_version.stdout }}"
+  when: tmp_file.stat.exists == False
+
+- name: Write Fedora version to temp file
+  copy:
+    content: "{{ fedora_version }}"
+    dest: "/tmp/fedora_version"
+  when: tmp_file.stat.exists == False
+
+# If temp file exists
+- name: Get Fedora version from temp file
+  set_fact:
+    fedora_version: "{{ lookup('file', '/tmp/fedora_version') }}"
+  when: tmp_file.stat.exists == True
+
+# fedora_version has been set in all cases
 # command: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version.stdout }}.noarch.rpm
 - name: Install RPM Fusion repository
   ansible.builtin.dnf:
-    name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version.stdout }}.noarch.rpm
+    name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
   become: true
 
 - name: Install VLC

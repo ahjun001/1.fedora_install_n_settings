@@ -30,10 +30,10 @@
     # - chrome_install
     # - brave_install
     - vlc_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - system_settings
-    - webapps_install
-    - anki_install
+    # - git_global_setup # requires become: false in the playing playbook
+    # - shellspec_install
+    # - system_settings
+    # - webapps_install
+    # - anki_install
 
     # - debug

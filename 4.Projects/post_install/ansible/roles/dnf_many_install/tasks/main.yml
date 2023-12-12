@@ -20,4 +20,5 @@
       - kompare # for KDE Plasma
       - torbrowser-launcher.noarch
       - numberstation
+      - filezilla
     state: latest
