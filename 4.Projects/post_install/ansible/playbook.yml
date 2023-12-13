@@ -21,7 +21,7 @@
     # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - config_dnf
     # - update_all_packages
-    - snapper_install
+    # - snapper_install
     # - update_full_name
     # - dnf_many_install
     # - dot_bashrc_modif
@@ -33,7 +33,7 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    # - webapps_install
+    - webapps_install
     # - anki_install
 
     # - debug

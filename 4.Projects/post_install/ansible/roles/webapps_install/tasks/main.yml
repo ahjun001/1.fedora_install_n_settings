@@ -96,3 +96,12 @@
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create Bard chat
+  vars:
+    app_name: "Bard"
+    webapp_url: "https://bard.google.com/chat/3292a98e6af645e6"
+  become: no
+  shell:
+    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"

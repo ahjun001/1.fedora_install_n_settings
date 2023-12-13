@@ -21,4 +21,6 @@
       - torbrowser-launcher.noarch
       - numberstation
       - filezilla
+      - wine
+      - wine.i686
     state: latest
