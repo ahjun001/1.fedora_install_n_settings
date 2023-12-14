@@ -23,4 +23,6 @@
       - filezilla
       - wine
       - wine.i686
+      - winetricks # required to install chinese fonts for WeChat
+      - cabextract # required to install chinese fonts for WeChat
     state: latest

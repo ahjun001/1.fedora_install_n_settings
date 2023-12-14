@@ -5,5 +5,10 @@ After running ./ansible/playbook.yml
 . $ wine /mnt/TPad_mimi/wenlin432setup.exe
 $ cp /mnt/TPad_mimi/Text3_PJP/ /home/perubu/.wine/drive_c/users/Public/Documents/Wenlin432Tushuguan/
 
+
 . download wechatsetup.exe on https://pc.weixin.qq.com/?lang=en_US  on /mnt/TPad_mimi/
 install with wine
+
+
+Housekeeping:
+. remove all .desktop programs in ~/.local/share/applications/
