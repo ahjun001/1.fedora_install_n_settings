@@ -11,6 +11,7 @@
       - neofetch
       - btrfs-assistant # Fedora only
       - prename # Fedora only
+      - thunderbird
       - ffmpeg
       - hunspell-fr
       - libreoffice-langpack-fr
