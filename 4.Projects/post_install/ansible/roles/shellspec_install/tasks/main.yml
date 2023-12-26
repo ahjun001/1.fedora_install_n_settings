@@ -5,7 +5,7 @@
   register: shellspec_installed
   failed_when: false
   changed_when: false
-  check_mode: no
+  check_mode: false
 
 - name: Download ShellSpec install script
   get_url:

@@ -27,3 +27,17 @@
       - winetricks # required to install chinese fonts for WeChat
       - cabextract # required to install chinese fonts for WeChat
     state: latest
+
+- name: Add  roootfind alias to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    regexp: "^alias rootfind="
+    line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '"
+    state: present
+
+- name: Add clear_GPUCache alias to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    regexp: "^alias clear_GPUCache="
+    line: alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \;'
+    state: present

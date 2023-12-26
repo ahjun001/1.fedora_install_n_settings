@@ -7,7 +7,7 @@
 
 - name: Check brave-browser repository status and enable it
   yum_repository:
-    name: brave-browser-new # Choose a different name for new repository
+    name: brave-browser # Choose a different name for new repository
     state: present
     description: Brave Browser
     baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
@@ -17,7 +17,7 @@
 
 - name: Enable brave-browser repository if not already enabled
   yum_repository:
-    name: brave-browser-new
+    name: brave-browser
     description: Brave Browser
     state: present
     baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch

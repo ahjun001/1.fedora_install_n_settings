@@ -1,0 +1,39 @@
+# task file for speedtest_install
+
+- name: Install necessary packages
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - gcc
+      - python-devel
+    state: present
+
+- name: Install Python package
+  ansible.builtin.pip:
+    name: aiohttp
+    state: present
+
+- name: Check if Ookla repository exists
+  become: true
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/ookla_speedtest-cli.repo
+  register: ookla_repo
+
+- name: Add Ookla repository
+  become: true
+  ansible.builtin.shell: |
+    curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash
+  when: ookla_repo.stat.exists == False
+
+- name: Install speedtest
+  become: true
+  ansible.builtin.dnf:
+    name: speedtest
+    state: present
+
+- name: Add alias to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'"
+    state: present
+    create: yes

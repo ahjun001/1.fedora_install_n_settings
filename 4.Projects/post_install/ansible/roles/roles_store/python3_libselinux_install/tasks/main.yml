@@ -4,5 +4,5 @@
   ansible.builtin.dnf:
     name: python3-libselinux
     state: present
-    update_cache: no
+    update_cache: false
   become: true

@@ -2,16 +2,16 @@
 # task file for ibus_chinese_ime2
 - name: Set IBus as the input method engine
   command: imsettings-switch IBus
-  become: yes
+  become: true
 
 # - name: Log out and log in again
 #   command: pkill -KILL -u perubu
-#   become: yes
-#   ignore_errors: yes
+#   become: true
+#   ignore_errors: true
 
 # - name: Log out and log in again
 #   ansible.builtin.shell: "dbus-send --type=method_call --dest=org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout int32:0 int32:0 int32:0"
 
 - name: Add "Chinese - Intelligent Pinyin" as an input method
   command: ibus engine libpinyin
-  become: yes
+  become: true

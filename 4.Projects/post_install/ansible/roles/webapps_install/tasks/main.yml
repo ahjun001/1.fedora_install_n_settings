@@ -20,7 +20,7 @@
   vars:
     app_name: "Cnrtl"
     webapp_url: "https://cnrtl.fr/definition/"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -29,7 +29,7 @@
   vars:
     app_name: "Trello"
     webapp_url: "{{ trello_weblink }}"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -38,7 +38,7 @@
   vars:
     app_name: "le_Conjugueur"
     webapp_url: "https://leconjugueur.lefigaro.fr/"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -47,7 +47,7 @@
   vars:
     app_name: "WhatsApp"
     webapp_url: "https://web.whatsapp.com/"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -56,7 +56,7 @@
   vars:
     app_name: "YouTube"
     webapp_url: "https://youtube.com/"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -65,7 +65,7 @@
   vars:
     app_name: "GSearch"
     webapp_url: "https://www.google.com.hk/?hl=en-US&fg=1"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -74,7 +74,7 @@
   vars:
     app_name: "Bing_search"
     webapp_url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -83,7 +83,7 @@
   vars:
     app_name: "Speedtest"
     webapp_url: "https://www.speedtest.net/"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -92,7 +92,7 @@
   vars:
     app_name: "DeepAi"
     webapp_url: "https://deepai.org/chat"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
@@ -101,7 +101,7 @@
   vars:
     app_name: "Bard"
     webapp_url: "https://bard.google.com/chat/3292a98e6af645e6"
-  become: no
+  become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
