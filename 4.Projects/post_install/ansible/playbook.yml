@@ -23,7 +23,7 @@
     # - update_all_packages
     # - snapper_install
     # - update_full_name
-    - dnf_many_install
+    # - dnf_many_install
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
@@ -34,7 +34,7 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    # - webapps_install
+    - webapps_install
     # - anki_install
 
     # - debug

@@ -18,7 +18,7 @@
 
 - name: Create Cnrtl webapp
   vars:
-    app_name: "Cnrtl"
+    app_name: "Cnrtl" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://cnrtl.fr/definition/"
   become: false
   shell:
@@ -27,7 +27,7 @@
 
 - name: Create Trello webapp
   vars:
-    app_name: "Trello"
+    app_name: "Trello" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "{{ trello_weblink }}"
   become: false
   shell:
@@ -36,7 +36,7 @@
 
 - name: Create le Conjugueur webapp
   vars:
-    app_name: "le_Conjugueur"
+    app_name: "le_Conjugueur" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://leconjugueur.lefigaro.fr/"
   become: false
   shell:
@@ -45,7 +45,7 @@
 
 - name: Create WhatsApp webapp
   vars:
-    app_name: "WhatsApp"
+    app_name: "WhatsApp" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://web.whatsapp.com/"
   become: false
   shell:
@@ -54,7 +54,7 @@
 
 - name: Create YouTube webapp
   vars:
-    app_name: "YouTube"
+    app_name: "YouTube" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://youtube.com/"
   become: false
   shell:
@@ -63,7 +63,7 @@
 
 - name: Create Google search webapp
   vars:
-    app_name: "GSearch"
+    app_name: "GSearch" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://www.google.com.hk/?hl=en-US&fg=1"
   become: false
   shell:
@@ -72,17 +72,8 @@
 
 - name: Create Bing search webapp
   vars:
-    app_name: "Bing_search"
+    app_name: "Bing_search" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Speedtest webapp
-  vars:
-    app_name: "Speedtest"
-    webapp_url: "https://www.speedtest.net/"
   become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
@@ -90,7 +81,7 @@
 
 - name: Create DeepAi chat
   vars:
-    app_name: "DeepAi"
+    app_name: "DeepAi" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://deepai.org/chat"
   become: false
   shell:
@@ -99,9 +90,18 @@
 
 - name: Create Bard chat WebApp
   vars:
-    app_name: "Bard"
+    app_name: "Bard" # NO SPACE IN APP NAME FOR IDEMPOTENCY
     webapp_url: "https://bard.google.com/chat/3292a98e6af645e6"
   become: false
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
+    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+
+- name: Create Test my speed webapp
+  vars:
+    app_name: "Test_my_speed" # NO SPACE IN APP NAME FOR IDEMPOTENCY
+    webapp_url: "https://www.testmyspeed.com/"
+  become: false
+  shell:
+    cmd: "cd ~/.local/bin && nativefier -i /usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg --name '{{ app_name }}' '{{ webapp_url }}' || exit"
     creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
