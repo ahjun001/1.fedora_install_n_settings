@@ -17,7 +17,7 @@
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     - key_vault_pwd_setup
-        
+
     # - system_settings # not idempotent
     # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - config_dnf
@@ -37,7 +37,6 @@
     # - shellspec_install
     # - webapps_install
     # - anki_install
-
+    - speedtest_boot_run
     # - debug
     # - test
-  

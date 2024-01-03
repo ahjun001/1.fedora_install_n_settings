@@ -61,3 +61,37 @@
 - name: Append blank line to .bashrc if needed
   shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
   when: result.rc != 0
+
+- name: Add VISUAL to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    regexp: "^VISUAL="
+    line: export VISUAL=nvim
+    state: present
+
+- name: check if last line of .bashrc is empty
+  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
+  register: result
+  failed_when: false
+  changed_when: false
+
+- name: Append blank line to .bashrc if needed
+  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
+  when: result.rc != 0
+
+- name: Add EDITOR to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    regexp: "^EDITOR="
+    line: export EDITOR=nvim
+    state: present
+
+- name: check if last line of .bashrc is empty
+  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
+  register: result
+  failed_when: false
+  changed_when: false
+
+- name: Append blank line to .bashrc if needed
+  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
+  when: result.rc != 0

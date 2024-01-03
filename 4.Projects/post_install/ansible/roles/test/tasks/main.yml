@@ -1,0 +1,17 @@
+---
+# task file for test
+
+- name: return code
+  command: "! true"
+  register: result
+  failed_when: result.rc == 0
+
+- name: command returned 0
+  debug:
+    msg: "command succeeded, return code was {{ result.rc }}"
+  when: result.rc == 0
+
+- name: command did not return 0
+  debug:
+    msg: "command failed, return code was {{ result.rc }}"
+  when: result.rc != 0
