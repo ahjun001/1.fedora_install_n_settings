@@ -1,0 +1,26 @@
+---
+- name: Ensure wmctrl is installed
+  become: true
+  ansible.builtin.dnf:
+    name: wmctrl
+    state: present
+
+- name: Create autostart directory if it doesn't exist
+  file:
+    path: "/home/{{ ansible_user }}/.config/autostart"
+    state: directory
+
+- name: Create desktop file to run bash commands
+  copy:
+    dest: "/home/{{ ansible_user }}/.config/autostart/sys_monitor.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Exec=/bin/bash -c "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1 & sleep 1 && wmctrl -r 'System Monitor' -t 1"
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name[en_US]=System Monitor
+      Name=System Monitor
+      Comment[en_US]=Start System Monitor on login
+      Comment=Start System Monitor on login

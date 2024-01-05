@@ -37,6 +37,7 @@
     # - shellspec_install
     # - webapps_install
     # - anki_install
-    - speedtest_boot_run
+    # - speedtest_startup
+    - sys_monitor_startup
     # - debug
     # - test
