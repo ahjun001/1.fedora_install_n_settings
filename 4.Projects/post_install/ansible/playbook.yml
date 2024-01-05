@@ -38,6 +38,7 @@
     # - webapps_install
     # - anki_install
     # - speedtest_startup
-    - sys_monitor_startup
+    # - sys_monitor_startup
+    - telegram_install
     # - debug
     # - test

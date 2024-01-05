@@ -1,12 +1,12 @@
 ---
-# task file for vlc_install
+# task file for telegram_install
 
 - name: Check Fedora version temp file existence
   stat:
     path: /tmp/fedora_version
   register: tmp_file
 
-# If temp file does not exist 
+# If temp file does not exist
 - name: Retrieve Fedora version from system (would run each time, so not idempotent)
   command: rpm -E %fedora
   register: retrieved_version
@@ -30,12 +30,18 @@
   when: tmp_file.stat.exists == True
 
 # fedora_version has been set in all cases
-- name: Install RPM Fusion repository
+- name: Install RPM Fusion free-release repository
   ansible.builtin.dnf:
     name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
   become: true
 
-- name: Install VLC
-  ansible.builtin.dnf:
-    name: vlc
+# - name: Install RPM Fusion free-release repository
+#   ansible.builtin.dnf:
+#     name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
+#   become: true
+
+- name: Install telegram
   become: true
+  ansible.builtin.dnf:
+    name: telegram-desktop
+  # state: latest
