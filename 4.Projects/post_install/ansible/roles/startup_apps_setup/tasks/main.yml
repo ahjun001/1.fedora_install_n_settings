@@ -11,7 +11,7 @@
     path: "/home/{{ ansible_user }}/.config/autostart"
     state: directory
 
-- name: Check if desktop file exists
+- name: Check if sys_monitor.desktop file exists
   stat:
     path: /home/{{ ansible_user }}/.config/autostart/sys_monitor.desktop
   register: sys_monitor_desktop
@@ -34,7 +34,7 @@
       Comment=Start System Monitor on login
   when: sys_monitor_desktop.stat.exists == false
 
-- name: Check if desktop file exists
+- name: Check if xyz.ketok.Speedtest.desktop file exists
   stat:
     path: /home/{{ ansible_user }}/.config/autostart/xyz.ketok.Speedtest.desktop
   register: speedtest_desktop
@@ -52,3 +52,37 @@
       Type=Application
     dest: /home/{{ ansible_user }}/.config/autostart/xyz.ketok.Speedtest.desktop
   when: speedtest_desktop.stat.exists == false
+
+- name: Check if thunderbird_1.daily.desktop file exists
+  stat:
+    path: /home/{{ ansible_user }}/.config/autostart/thunderbird_1.daily.desktop
+  register: thunderbird_1_daily_desktop
+
+- name: Create desktop file
+  copy:
+    content: |
+      [Desktop Entry]
+      Exec=thunderbird -p "1.daily"
+      Icon=dialog-scripts
+      Name=thunderbird -p "1.daily"
+      Type=Application
+      X-KDE-AutostartScript=true
+    dest: /home/{{ ansible_user }}/.config/autostart/thunderbird_1.daily.desktop
+  when: thunderbird_1_daily_desktop.stat.exists == false
+
+- name: Check if thunderbird_2.google&yahoo.desktop file exists
+  stat:
+    path: /home/{{ ansible_user }}/.config/autostart/thunderbird_2.google&yahoo.desktop
+  register: thunderbird_2_google_yahoo_desktop
+
+- name: Create desktop file
+  copy:
+    content: |
+      [Desktop Entry]
+      Exec=thunderbird -p "2.google&yahoo"
+      Icon=dialog-scripts
+      Name=thunderbird -p "2.google&yahoo"
+      Type=Application
+      X-KDE-AutostartScript=true
+    dest: /home/{{ ansible_user }}/.config/autostart/thunderbird_2.google&yahoo.desktop
+  when: thunderbird_2_google_yahoo_desktop.stat.exists == false
