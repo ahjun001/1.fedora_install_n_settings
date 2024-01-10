@@ -1,0 +1,54 @@
+---
+# task file for startup_apps_setup
+# - name: Ensure wmctrl is installed
+#   become: true
+#   ansible.builtin.dnf:
+#     name: wmctrl
+#     state: present
+
+- name: Create autostart directory if it doesn't exist
+  file:
+    path: "/home/{{ ansible_user }}/.config/autostart"
+    state: directory
+
+- name: Check if desktop file exists
+  stat:
+    path: /home/{{ ansible_user }}/.config/autostart/sys_monitor.desktop
+  register: sys_monitor_desktop
+
+- name: Create desktop file to startup with System Monitor
+  copy:
+    dest: "/home/{{ ansible_user }}/.config/autostart/sys_monitor.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      # Use this to startup in Destop 2  ( -t 1 , as Desktop count starts with 0)
+      # Exec=/bin/bash -c "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1 & sleep 1 && wmctrl -r 'System Monitor' -t 1"
+      Exec=/bin/bash -c "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name[en_US]=System Monitor
+      Name=System Monitor
+      Comment[en_US]=Start System Monitor on login
+      Comment=Start System Monitor on login
+  when: sys_monitor_desktop.stat.exists == false
+
+- name: Check if desktop file exists
+  stat:
+    path: /home/{{ ansible_user }}/.config/autostart/xyz.ketok.Speedtest.desktop
+  register: speedtest_desktop
+
+- name: Create desktop file
+  copy:
+    content: |
+      [Desktop Entry]
+      Categories=GTK;
+      Exec=/home/{{ ansible_user }}/.local/bin/Test_my_speed-linux-x64/Test_my_speed
+      Icon=xyz.ketok.Speedtest
+      Name=Speedtest
+      StartupNotify=true
+      Terminal=false
+      Type=Application
+    dest: /home/{{ ansible_user }}/.config/autostart/xyz.ketok.Speedtest.desktop
+  when: speedtest_desktop.stat.exists == false

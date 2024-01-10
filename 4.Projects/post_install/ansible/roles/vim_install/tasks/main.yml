@@ -8,35 +8,35 @@
 
 - name: Test if vimrc exists, fail if it does not
   ansible.builtin.file:
-    path: "/home/perubu/Documents/Github/2.1.vim/1.Install/vimrc"
+    path: "/home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc"
     state: file
 
 
 - name: Ensure ~/.vim/ exists
   ansible.builtin.file:
-    path: /home/perubu/.vim
+    path: /home/{{ ansible_user }}/.vim
     state: directory
     mode: "0755"
-    group: perubu
-    owner: perubu
+    group: {{ ansible_user }}
+    owner: {{ ansible_user }}
 
 # - name: Ensure directories exist, create if it does not
 #   ansible.builtin.file:
 #     path: "{{ item }}"
 #     state: directory
 #     mode: "0755"
-#     group: perubu
-#     owner: perubu
+#     group: {{ ansible_user }}
+#     owner: {{ ansible_user }}
 #   loop:
-#     - "/home/perubu/.vim"
-#     - "/home/perubu/.vim/swap"
-#     - "/home/perubu/.vim/backup"
-#     - "/home/perubu/.vim/undo"
-#     - "/home/perubu/.vim/view"
+#     - "/home/{{ ansible_user }}/.vim"
+#     - "/home/{{ ansible_user }}/.vim/swap"
+#     - "/home/{{ ansible_user }}/.vim/backup"
+#     - "/home/{{ ansible_user }}/.vim/undo"
+#     - "/home/{{ ansible_user }}/.vim/view"
 
 - name: Create symbolic link for vimrc
   ansible.builtin.file:
-    src: /home/perubu/Documents/Github/2.1.vim/1.Install/vimrc
-    dest: /home/perubu/.vim/vimrc
+    src: /home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc
+    dest: /home/{{ ansible_user }}/.vim/vimrc
     state: link
     force: yes

@@ -23,11 +23,11 @@
     # - config_dnf
     # - update_all_packages
     # - snapper_install
-    # - update_full_name
     # - dnf_many_install
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
+    # - bashrc_edit
     # - speedtest_CLI_install
     # - vscode_install
     # - chrome_install
@@ -37,8 +37,7 @@
     # - shellspec_install
     # - webapps_install
     # - anki_install
-    # - speedtest_startup
-    # - sys_monitor_startup
-    - telegram_install
+    - startup_apps_setup
+    # - telegram_install
     # - debug
     # - test
