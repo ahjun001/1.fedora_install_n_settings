@@ -1,63 +1,37 @@
 ---
 # task file for bashrc_edit
 
-- name: Add  roootfind alias to ~/.bashrc
+- name: append bashrc with a blank line
   ansible.builtin.lineinfile:
     path: /home/{{ ansible_user }}/.bashrc
-    regexp: "^alias rootfind="
-    line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '"
+    line: " "
     state: present
 
-- name: check if last line of .bashrc is empty
-  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
-  register: result
-  failed_when: false
-  changed_when: false
-
-- name: Append blank line to .bashrc if needed
-  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
-  when: result.rc != 0
-
-- name: Add clear_GPUCache alias to ~/.bashrc
+- name: Add aliases and exports to ~/.bashrc
   ansible.builtin.lineinfile:
-    path: "~/.bashrc"
-    regexp: "^alias clear_GPUCache="
-    line: alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \;'
+    path: /home/{{ ansible_user }}/.bashrc
+    regexp: "^{{ item.regexp }}"
+    line: "{{ item.line }}"
     state: present
-
-- name: check if last line of .bashrc is empty
-  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
-  register: result
-  failed_when: false
-  changed_when: false
-
-- name: Append blank line to .bashrc if needed
-  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
-  when: result.rc != 0
-
-- name: Add VISUAL to ~/.bashrc
-  ansible.builtin.lineinfile:
-    path: "~/.bashrc"
-    regexp: "^VISUAL="
-    line: export VISUAL=nvim
-    state: present
-
-- name: check if last line of .bashrc is empty
-  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
-  register: result
-  failed_when: false
-  changed_when: false
-
-- name: Append blank line to .bashrc if needed
-  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
-  when: result.rc != 0
-
-- name: Add EDITOR to ~/.bashrc
-  ansible.builtin.lineinfile:
-    path: "~/.bashrc"
-    regexp: "^EDITOR="
-    line: export EDITOR=nvim
-    state: present
+  loop:
+    - {
+        regexp: "# --- added by Ansible ---",
+        line: "# --- added by Ansible ---",
+      }
+    - {
+        regexp: "alias stest_speedtest=",
+        line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'",
+      }
+    - {
+        regexp: "alias rootfind=",
+        line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '",
+      }
+    - {
+        regexp: "alias clear_GPUCache=",
+        line: "alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \\;'",
+      }
+    - { regexp: "export VISUAL=", line: "export VISUAL=nvim" }
+    - { regexp: "export EDITOR=", line: "export EDITOR=nvim" }
 
 - name: check if last line of .bashrc is empty
   shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
