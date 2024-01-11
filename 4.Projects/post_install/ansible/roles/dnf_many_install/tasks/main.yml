@@ -22,6 +22,8 @@
       # - torbrowser-launcher.noarch
       # - numberstation  # 2FA authenticator for github.com
       # - filezilla
+      # - audacity
+      # - tldr
       # - wine
       # - wine.i686
       # - winetricks # required to install chinese fonts for WeChat
