@@ -1,0 +1,23 @@
+---
+# create_desktop_files.yml
+
+- name: Check if file exists
+  stat:
+    path: "/home/{{ ansible_user }}/.config/autostart/{{ item.filename }}"
+  register: file_stat
+
+- name: Create desktop files for autostart
+  copy:
+    dest: "/home/{{ ansible_user }}/.config/autostart/{{ item.filename }}"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Exec=/bin/bash -c "{{ item.exec }}"
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name[en_US]={{ item.name.capitalize() }}
+      Name={{ item.name.capitalize() }}
+      Comment[en_US]={{ item.comment }}
+      Comment={{ item.comment }}
+  when: not file_stat.stat.exists
