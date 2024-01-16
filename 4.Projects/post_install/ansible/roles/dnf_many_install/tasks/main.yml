@@ -28,4 +28,5 @@
       # - wine.i686
       # - winetricks # required to install chinese fonts for WeChat
       # - cabextract # required to install chinese fonts for WeChat
+      # - virt-manager
     state: latest
