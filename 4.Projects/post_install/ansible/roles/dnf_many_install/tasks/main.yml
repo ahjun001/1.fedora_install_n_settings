@@ -6,7 +6,7 @@
     name:
       # - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
       # - htop # Todo: learn & update flashcard
-      - gparted
+      # - gparted
       # - gnome-disk-utility
       # - neofetch
       # - btrfs-assistant # Fedora only
@@ -28,5 +28,4 @@
       # - wine.i686
       # - winetricks # required to install chinese fonts for WeChat
       # - cabextract # required to install chinese fonts for WeChat
-      # - virt-manager
     state: latest

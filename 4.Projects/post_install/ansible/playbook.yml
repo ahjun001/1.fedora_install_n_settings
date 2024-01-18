@@ -27,7 +27,7 @@
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
-    - bashrc_edit
+    # - bashrc_edit
     # - speedtest_CLI_install
     # - vscode_install
     # - chrome_install
@@ -38,6 +38,8 @@
     # - webapps_install
     # - anki_install
     # - startup_apps_setup
+    - virtm_install
+    
     # - telegram_install
     # - debug
     # - test

@@ -1,0 +1,15 @@
+---
+# task file for virtm_install
+
+- name: Install virt-manager
+  become: true
+  ansible.builtin.dnf:
+    name: virt-manager
+    state: latest
+
+- name: Add user to libvirt group
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+    groups: libvirt
+    append: yes
