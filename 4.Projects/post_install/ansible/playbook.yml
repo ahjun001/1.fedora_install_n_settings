@@ -23,7 +23,7 @@
     # - config_dnf
     # - update_all_packages
     # - snapper_install
-    # - dnf_many_install
+    - dnf_many_install
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
@@ -38,8 +38,8 @@
     # - webapps_install
     # - anki_install
     # - startup_apps_setup
-    - virtm_install
-    
+    # - virtm_install
     # - telegram_install
+
     # - debug
     # - test

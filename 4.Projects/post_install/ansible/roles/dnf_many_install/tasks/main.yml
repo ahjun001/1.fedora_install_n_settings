@@ -22,6 +22,7 @@
       # - torbrowser-launcher.noarch
       # - numberstation  # 2FA authenticator for github.com
       # - filezilla
+      - rubygem-asciidoctor
       # - audacity
       # - tldr
       # - wine
