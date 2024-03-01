@@ -18,12 +18,13 @@ endif::[]
 == Summary
 
 After a fresh install, this automates:
-- the initial installation settings are as expected
+
+- settings as for desired installation
 - all packages, repos and additional are ready for use, including their settings
 
 == Workflow
 
-Install on baremetal. Confirm and make notes of all settings that are given during installation.
+Install on bare metal. Confirm and make notes of all settings that are given during installation.
 Install packages & settings.
 
 == Technically

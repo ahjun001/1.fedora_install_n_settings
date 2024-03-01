@@ -1,0 +1,10 @@
+---
+# task file to check if Foxit is installed
+- name: Check if Foxit is already installed
+  stat:
+    path: /usr/local/bin/foxit
+  register: foxit_installed
+
+- name: Include foxit installation playbook
+  include_tasks: foxit_install.yml
+  when: foxit_installed.stat.exists == False

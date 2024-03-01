@@ -1,0 +1,10 @@
+---
+# task file to check if Anki is installed
+- name: Check if Anki is already installed
+  stat:
+    path: /usr/local/bin/anki
+  register: anki_installed
+
+- name: Include Anki installation playbook
+  include_tasks: anki_install.yml
+  when: anki_installed.stat.exists == False

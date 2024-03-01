@@ -8,7 +8,7 @@
     state: latest
 
 - name: Add user to libvirt group
-  become: yes
+  become: true
   user:
     name: "{{ ansible_user }}"
     groups: libvirt

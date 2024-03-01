@@ -21,8 +21,10 @@
       # - kompare # for KDE Plasma
       # - torbrowser-launcher.noarch
       # - numberstation  # 2FA authenticator for github.com
+      - bleachbit
       # - filezilla
-      - rubygem-asciidoctor
+      # - rubygem-asciidoctor
+      # - transmission
       # - audacity
       # - tldr
       # - wine

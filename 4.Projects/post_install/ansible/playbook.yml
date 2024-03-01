@@ -23,7 +23,7 @@
     # - config_dnf
     # - update_all_packages
     # - snapper_install
-    - dnf_many_install
+    # - dnf_many_install
     # - dot_bashrc_modif
     # - vim_install
     # - nvim_install
@@ -40,6 +40,7 @@
     # - startup_apps_setup
     # - virtm_install
     # - telegram_install
+    - foxit_reader_install
 
     # - debug
     # - test
