@@ -13,3 +13,10 @@
     name: "{{ ansible_user }}"
     groups: libvirt
     append: yes
+      
+# task file for dot_bashrc_modif
+- name: Add export LIBVIRT_DEFAULT_URI to ~/.bashrc
+  lineinfile:
+    path: ~/.bashrc
+    line: "export LIBVIRT_DEFAULT_URI=qemu:///system"
+    state: present
