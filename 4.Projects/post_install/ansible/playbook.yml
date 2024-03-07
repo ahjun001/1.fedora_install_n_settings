@@ -35,10 +35,10 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    # - webapps_install
+    - webapps_install
     # - anki_install
     # - startup_apps_setup
-    - virtm_install
+    # - virtm_install
     # - telegram_install
     # - foxit_reader_install
 
