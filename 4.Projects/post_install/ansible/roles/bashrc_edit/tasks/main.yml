@@ -3,13 +3,13 @@
 
 - name: append bashrc with a blank line
   ansible.builtin.lineinfile:
-    path: /home/{{ ansible_user }}/.bashrc
+    path: /home/"{{ ansible_user }}"/.bashrc
     line: " "
     state: present
 
 - name: Add aliases and exports to ~/.bashrc
   ansible.builtin.lineinfile:
-    path: /home/{{ ansible_user }}/.bashrc
+    path: /home/"{{ ansible_user }}"/.bashrc
     regexp: "^{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
@@ -34,11 +34,11 @@
     - { regexp: "export EDITOR=", line: "export EDITOR=nvim" }
 
 - name: check if last line of .bashrc is empty
-  shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"
+  shell: "[[ -z $(tail -n 1 /home/"{{ ansible_user }}"/.bashrc) ]]"
   register: result
   failed_when: false
   changed_when: false
 
 - name: Append blank line to .bashrc if needed
-  shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
+  shell: "echo '' >>  /home/"{{ ansible_user }}"/.bashrc"
   when: result.rc != 0

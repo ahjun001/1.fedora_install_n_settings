@@ -11,4 +11,4 @@
     dest: /etc/systemd/system/default.target
     state: link
     force: yes
-  when: plasma_check.stdout != ""
+  when: plasma_check.stdout != "

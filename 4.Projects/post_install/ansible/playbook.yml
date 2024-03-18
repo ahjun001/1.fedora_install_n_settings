@@ -25,7 +25,7 @@
     # - snapper_install
     # - dnf_many_install
     # - dot_bashrc_modif
-    # - vim_install
+    - vim_install
     # - nvim_install
     # - bashrc_edit
     # - speedtest_CLI_install
@@ -35,7 +35,7 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    - webapps_install
+    # - webapps_install
     # - anki_install
     # - startup_apps_setup
     # - virtm_install

@@ -17,7 +17,7 @@
         filename: "thunderbird_2.google&yahoo.desktop"
         comment: "Autostart Thunderbird (2.google&yahoo)"
       - name: speedtest
-        exec: "/home/{{ ansible_user }}/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
+        exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
         filename: "xyz.ketok.Speedtest.desktop"
         comment: "Autostart Speedtest"
 
