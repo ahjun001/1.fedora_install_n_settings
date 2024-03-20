@@ -22,10 +22,10 @@
     # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - config_dnf
     # - update_all_packages
-    - snapper_install
-    # - dnf_many_install
+    # - snapper_install
+    - dnf_many_install
     # - dot_bashrc_modif
-    - vim_install
+    # - vim_install
     # - nvim_install
     # - bashrc_edit
     # - speedtest_CLI_install
