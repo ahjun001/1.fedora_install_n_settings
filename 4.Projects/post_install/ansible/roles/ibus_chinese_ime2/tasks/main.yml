@@ -5,7 +5,7 @@
   become: true
 
 # - name: Log out and log in again
-#   command: pkill -KILL -u perubu
+#   command: pkill -KILL -u "{{ ansible_user }}"
 #   become: true
 #   ignore_errors: true
 

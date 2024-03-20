@@ -21,7 +21,7 @@
       # - kompare # for KDE Plasma
       # - torbrowser-launcher.noarch
       # - numberstation  # 2FA authenticator for github.com
-      - bleachbit
+      # - bleachbit # clean system's and packages' cache, cookies, ...
       # - filezilla
       # - rubygem-asciidoctor
       # - transmission

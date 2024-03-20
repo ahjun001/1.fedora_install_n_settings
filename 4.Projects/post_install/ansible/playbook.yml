@@ -5,7 +5,7 @@
 # [defaults]
 # vault_password_file   = /tmp/.vault_pass.txt
 - hosts: all
-  remote_user: perubu
+  remote_user: "{{ ansible_user }}"
   become_method: sudo
   become: false # the only way for git_global_setup to work in regular user instead of root
   vars_files:
@@ -22,7 +22,7 @@
     # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     # - config_dnf
     # - update_all_packages
-    # - snapper_install
+    - snapper_install
     # - dnf_many_install
     # - dot_bashrc_modif
     - vim_install
