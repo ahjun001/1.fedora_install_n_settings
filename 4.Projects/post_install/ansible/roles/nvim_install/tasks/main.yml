@@ -8,20 +8,28 @@
 
 - name: Test if vimrc exists, fail if it does not
   ansible.builtin.file:
-    path: "/home/"{{ ansible_user }}"/Documents/Github/2.1.vim/1.Install/vimrc"
+    path: "/home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc"
     state: file
 
 - name: Ensure ~/.config/nvim/ exists
   ansible.builtin.file:
-    path: /home/"{{ ansible_user }}"/.config/nvim
+    path: "/home/{{ ansible_user }}/.config/nvim"
     state: directory
     mode: "0755"
     group: "{{ ansible_user }}"
     owner: "{{ ansible_user }}"
 
-- name: Create symbolic link for init.vim
+- name: Link init.vim for user
   ansible.builtin.file:
-    src: /home/"{{ ansible_user }}"/Documents/Github/2.1.vim/1.Install/vimrc
-    dest: /home/"{{ ansible_user }}"/.config/nvim/init.vim
+    src: "/home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc"
+    dest: "/home/{{ ansible_user }}/.config/nvim/init.vim"
     state: link
     force: yes
+
+- name: Link init.vim for superuser
+  ansible.builtin.file:
+    src: "/home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc"
+    dest: /root/.config/nvim/init.vim
+    state: link
+    force: yes
+  become: yes
