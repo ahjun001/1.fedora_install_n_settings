@@ -32,5 +32,6 @@
       # - winetricks # required to install chinese fonts for WeChat
       # - cabextract # required to install chinese fonts for WeChat
       # - gimp
-      - kdenlive
+      # - kdenlive
+      - discord
     state: latest
