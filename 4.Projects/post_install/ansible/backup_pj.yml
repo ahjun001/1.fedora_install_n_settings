@@ -1,0 +1,53 @@
+---
+# check on test dir before backuping on Tosh_4TB
+# erase backup before creating a new one
+# inspect open documents before backuping
+# RESTORE to a minimum, only if necessary, always by hand
+
+# $ ansible-playbook -i hosts backup_pj.yml
+
+- hosts: localhost
+  vars:
+    ansible_user: perubu
+    backup_dirs:
+      Crypted_bkup_dir: "/mnt/VMs/crypted"
+      Open_bkup_dir: "/mnt/VMs/open"
+      # Crypted_bkup_dir: "/run/media/{{ ansible_user }}/Tosh_bkup"
+      # Open_bkup_dir: "/run/media/{{ ansible_user }}/Tosh_4TB"
+    folders_to_backup:
+      Crypted_bkup_dir: # ~ 6 GiB
+        # - ./.w32_wenlin
+        # - ./.w32_wechat
+        - ~/.thunderbird
+        - ~/.vscode
+        - ~/opt
+        - ~/.fonts
+        - ~/.vim
+        - ~/.ssh
+        - ~/.mozilla
+        - ~/.local/share/applications
+      Open_bkup_dir:
+        - ~/Documents
+        - ~/Downloads
+        - ~/Music
+        - ~/Pictures
+        - ~/Desktop
+        - ~/Videos
+  tasks:
+    - name: Check if directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ backup_dirs['Crypted_bkup_dir'] }}"
+        - "{{ backup_dirs['Open_bkup_dir'] }}"
+      register: dir_check
+      failed_when: dir_check is failed
+    # - name: Backup files to Crypted_bkup_dir
+    #   command: rsync -avhr {{ item }} {{ backup_dirs['Crypted_bkup_dir'] }}
+    #   with_items: "{{ folders_to_backup['Crypted_bkup_dir'] }}"
+    #   when: dir_check is succeeded
+    # - name: Backup files to Open_bkup_dir
+    #   command: rsync -avhr {{ item }} {{ backup_dirs['Open_bkup_dir'] }}
+    #   with_items: "{{ folders_to_backup['Open_bkup_dir'] }}"
+    #   when: dir_check is succeeded
