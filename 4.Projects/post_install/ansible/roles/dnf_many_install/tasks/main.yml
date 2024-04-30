@@ -19,6 +19,8 @@
       # - libreoffice-grammalecte
       # - meld # for Gnome
       # - kompare # for KDE Plasma
+      # - levien-inconsolata-fonts # necessary for calibre
+      # - calibre
       # - torbrowser-launcher.noarch
       # - numberstation  # 2FA authenticator for github.com
       # - bleachbit # clean system's and packages' cache, cookies, ...
