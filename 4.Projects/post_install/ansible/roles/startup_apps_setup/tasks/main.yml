@@ -16,10 +16,10 @@
         exec: "thunderbird -p '2.google&yahoo'"
         filename: "thunderbird_2.google&yahoo.desktop"
         comment: "Autostart Thunderbird (2.google&yahoo)"
-      - name: speedtest
-        exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
-        filename: "xyz.ketok.Speedtest.desktop"
-        comment: "Autostart Speedtest"
+      # - name: speedtest
+      #   exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
+      #   filename: "xyz.ketok.Speedtest.desktop"
+      #   comment: "Autostart Speedtest"
 
 - name: Check if file exists and create if not
   include_tasks: create_desktop_files.yml

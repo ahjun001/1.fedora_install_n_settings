@@ -7,5 +7,5 @@
     state: present
   with_items:
     - "fastestmirror=1"
-    - "max_parallel_downloads=10"
+    # - "max_parallel_downloads=10"
   become: true
