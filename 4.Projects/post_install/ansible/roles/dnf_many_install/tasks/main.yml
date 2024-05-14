@@ -5,35 +5,35 @@
   ansible.builtin.dnf:
     name:
       # - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
-      # - htop # Todo: learn & update flashcard
-      # - gparted
-      # - gnome-disk-utility
-      # - neofetch
-      # - btrfs-assistant # Fedora only
-      # - prename # Fedora only
-      # - thunderbird
-      # - ffmpeg
-      # - hunspell-fr
-      # - libreoffice-langpack-fr
-      # - hyphen-fr
-      # - libreoffice-grammalecte
-      # - meld # for Gnome
-      # - kompare # for KDE Plasma
-      # - levien-inconsolata-fonts # necessary for calibre
-      # - calibre
-      # - torbrowser-launcher.noarch
-      # - numberstation  # 2FA authenticator for github.com
-      # - bleachbit # clean system's and packages' cache, cookies, ...
-      # - filezilla
-      # - rubygem-asciidoctor
-      # - transmission
-      # - audacity
-      # - tldr
-      # - wine
-      # - wine.i686
-      # - winetricks # required to install chinese fonts for WeChat
-      # - cabextract # required to install chinese fonts for WeChat
-      # - gimp
-      # - kdenlive
-      - discord
+      - htop # Todo: learn & update flashcard
+      - gparted
+      - gnome-disk-utility
+      - neofetch
+      - btrfs-assistant # Fedora only
+      - prename # Fedora only
+      - thunderbird
+      - ffmpeg-free   # cinnamon
+      - hunspell-fr
+      - libreoffice-langpack-fr
+      - hyphen-fr
+      - libreoffice-grammalecte
+      - meld # for Gnome
+      - kompare # for KDE Plasma
+      - levien-inconsolata-fonts # necessary for calibre
+      - calibre
+      - torbrowser-launcher.noarch
+      - numberstation  # 2FA authenticator for github.com
+      - bleachbit # clean system's and packages' cache, cookies, ...
+      - filezilla
+      - rubygem-asciidoctor
+      - transmission
+      - audacity
+      - tldr
+      - wine
+      - wine.i686
+      - winetricks # required to install chinese fonts for WeChat
+      - cabextract # required to install chinese fonts for WeChat
+      - gimp
+      - kdenlive
+      # - discord
     state: latest

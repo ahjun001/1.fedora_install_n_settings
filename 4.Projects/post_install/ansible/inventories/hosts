@@ -2,8 +2,10 @@
 
 # Localhost configuration
 # to avoid SSH, add ansible_connection=local
-localhost ansible_connection=local
+# localhost ansible_connection=local
+# localhost ansible_user=perubu
+# localhost ansible_python_interpreter=/usr/bin/python
 
-# User and Python interpreter configuration
-localhost ansible_user=perubu
-localhost ansible_python_interpreter=/usr/bin/python
+# VM configuration
+[vm]
+192.168.122.133 ansible_user=perubu ansible_python_interpreter=/usr/bin/python

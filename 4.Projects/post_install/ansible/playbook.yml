@@ -22,7 +22,7 @@
     - key_vault_pwd_setup
 
     # - system_settings # not idempotent
-    # # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
+    # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     - config_dnf
     - update_all_packages
     - snapper_install
