@@ -12,6 +12,7 @@
       - btrfs-assistant # Fedora only
       - prename # Fedora only
       - thunderbird
+      - git
       - ffmpeg-free   # cinnamon
       - hunspell-fr
       - libreoffice-langpack-fr

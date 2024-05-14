@@ -26,6 +26,12 @@
     state: link
     force: yes
 
+- name: Ensure directory exists
+  ansible.builtin.file:
+    path: /root/.config/nvim/
+    state: directory
+  become: yes
+
 - name: Link init.vim for superuser
   ansible.builtin.file:
     src: "/home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc"
