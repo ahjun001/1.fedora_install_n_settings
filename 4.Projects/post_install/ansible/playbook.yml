@@ -11,6 +11,8 @@
   remote_user: "{{ ansible_user }}"
   become_method: sudo
   become: false # the only way for git_global_setup to work in regular user instead of root
+  vars:
+    vm_domain: "fedora40-cinnamon" # replace with your VM's domain name
   vars_files:
     - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
     - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
@@ -23,26 +25,28 @@
 
     # - system_settings # not idempotent
     # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
-    - config_dnf
-    - update_all_packages
-    - snapper_install
-    - dnf_many_install
-    - dot_bashrc_modif
-    - vim_install
-    - nvim_install
-    - bashrc_edit
-    - speedtest_CLI_install
-    - vscode_install
-    - brave_install
-    - chrome_install
-    - vlc_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - webapps_install
-    - anki_install
-    - startup_apps_setup
-    - virtm_install
-    - telegram_install
+    
+    - connect_to_a_vm
+    # - config_dnf
+    # - update_all_packages
+    # - snapper_install
+    # - dnf_many_install
+    # - dot_bashrc_modif
+    # - vim_install
+    # - nvim_install
+    # - bashrc_edit
+    # - speedtest_CLI_install
+    # - vscode_install
+    # - brave_install
+    # - chrome_install
+    # - vlc_install
+    # - git_global_setup # requires become: false in the playing playbook
+    # - shellspec_install
+    # - webapps_install
+    # - anki_install
+    # - startup_apps_setup
+    # - virtm_install
+    # - telegram_install
     # - foxit_reader_install
 
     # - debug

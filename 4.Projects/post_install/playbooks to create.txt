@@ -49,3 +49,5 @@ Google: includes GMail, Hangouts, google Drive and YouTube
 Configure Desktop and Wallpaper
 Wallpaper Wallpaper ype: Plain Color Color 
 
+# install Xerox driver on Linux from
+https://www.support.xerox.com/en-us/content/111461

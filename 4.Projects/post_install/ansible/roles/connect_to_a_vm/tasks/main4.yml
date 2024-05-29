@@ -1,0 +1,22 @@
+---
+# tasks / connect_to_a_vm / main.yml
+
+- name: Get IP address of VM
+  command: virsh domifaddr {{ vm_domain }}
+  register: vm_ip
+
+- name: Add VM IP to inventory
+  ansible.builtin.add_host:
+    groupname: vm
+    hostname: "{{ vm_ip.stdout }}"
+    ansible_host: "{{ vm_ip.stdout }}"
+  changed: vm_ip_changed
+
+- name: Install software using SSH
+  ansible.builtin.dnf:
+    name: figlet
+    state: present
+  delegate_to: "{{ hostvars['vm']['ansible_host'] }}"
+  vars:
+    ansible_user: "perubu"
+    ansible_port: 22

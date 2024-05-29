@@ -1,0 +1,30 @@
+---
+# task file for connect_to_a_vm
+
+- name: Set VM domain variable
+  set_fact:
+    vm_domain: "fedora40-cinnamon"
+
+- name: Get IP address of VM
+  command: virsh domifaddr {{ vm_domain }}
+  register: vm_ip
+
+- name: Display "{{ ansible_user }}"
+  debug:
+    msg: "{{ ansible_user }}"
+
+- name: SSH to VM using local machine password
+  authorized_key:
+    user: "{ { ansible_user } }"
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    state: present
+  when: vm_ip.stdout | length > 0
+
+- name: Install figlet package on VM
+  ansible.builtin.dnf:
+    name: figlet
+    state: present
+  become: yes
+  become_user: "{ { ansible_user } }"
+  delegate_to: vm_ip.stdout
+  when: vm_ip.stdout | length > 0
