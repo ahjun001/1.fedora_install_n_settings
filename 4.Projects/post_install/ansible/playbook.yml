@@ -26,7 +26,7 @@
     # - system_settings # not idempotent
     # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     
-    - connect_to_a_vm
+    # - connect_to_a_vm
     # - config_dnf
     # - update_all_packages
     # - snapper_install
@@ -42,7 +42,7 @@
     # - vlc_install
     # - git_global_setup # requires become: false in the playing playbook
     # - shellspec_install
-    # - webapps_install
+    - webapps_install
     # - anki_install
     # - startup_apps_setup
     # - virtm_install

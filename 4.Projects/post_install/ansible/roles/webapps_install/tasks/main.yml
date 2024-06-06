@@ -1,7 +1,13 @@
 ---
 # task file for webapps_install
 # Don´t use spaces in app_name , it will be used to create a directory, and then won't make the script idempotent
-- name: Ensure nodejs and npm are installed
+# Every few months the system sends a message for the apps to be re-built.
+# Latest check on Nativefier   $ nativefier --version   52.0.0
+# Update with $ npm install -g nativefier@latest
+# Then erase all app directories under ~/.local/bin  and build again with Ansible
+
+# Ensure Node.js and npm are installed
+- name: Ensure Node.js and npm are installed
   become: true
   ansible.builtin.dnf:
     name:
@@ -9,6 +15,7 @@
       - npm
     state: latest
 
+# Install nativefier globally
 - name: Install nativefier globally
   become: true
   community.general.npm:
@@ -16,92 +23,42 @@
     global: yes
     state: latest
 
-- name: Create Bard chat WebApp
-  vars:
-    app_name: "Bard" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://bard.google.com/chat/3292a98e6af645e6"
+# Create webapps
+- name: Create webapps
   become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Bing search webapp
   vars:
-    app_name: "Bing_search" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
-  become: false
+    webapp_urls:
+      - name: Bard
+        url: "https://bard.google.com/chat/3292a98e6af645e6"
+        icon: ""
+      - name: Bing_search
+        url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
+        icon: ""
+      - name: Cnrtl
+        url: "https://cnrtl.fr/definition/"
+        icon: ""
+      - name: DeepAi
+        url: "https://deepai.org/chat"
+        icon: ""
+      - name: GSearch
+        url: "https://www.google.com.hk/?hl=en-US&fg=1"
+        icon: ""
+      - name: le_Conjugueur
+        url: "https://leconjugueur.lefigaro.fr/"
+        icon: ""
+      - name: Test_my_speed
+        url: "https://www.testmyspeed.com/"
+        icon: "/usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
+      - name: Trello
+        url: "{{ trello_weblink }}"
+        icon: ""
+      - name: WhatsApp
+        url: "https://web.whatsapp.com/"
+        icon: ""
+      - name: YouTube
+        url: "https://youtube.com/"
+        icon: ""
+  loop: "{{ webapp_urls }}"
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Cnrtl webapp
-  vars:
-    app_name: "Cnrtl" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://cnrtl.fr/definition/"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create DeepAi chat
-  vars:
-    app_name: "DeepAi" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://deepai.org/chat"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Google search webapp
-  vars:
-    app_name: "GSearch" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://www.google.com.hk/?hl=en-US&fg=1"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create le Conjugueur webapp
-  vars:
-    app_name: "le_Conjugueur" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://leconjugueur.lefigaro.fr/"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Test my speed webapp
-  vars:
-    app_name: "Test_my_speed" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://www.testmyspeed.com/"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier -i /usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg --name '{{ app_name }}' '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create Trello webapp
-  vars:
-    app_name: "Trello" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "{{ trello_weblink }}"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create WhatsApp webapp
-  vars:
-    app_name: "WhatsApp" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://web.whatsapp.com/"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
-
-- name: Create YouTube webapp
-  vars:
-    app_name: "YouTube" # NO SPACE IN APP NAME FOR IDEMPOTENCY
-    webapp_url: "https://youtube.com/"
-  become: false
-  shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ app_name }}'  '{{ webapp_url }}' || exit"
-    creates: "~/.local/bin/{{ app_name }}-linux-x64/{{ app_name }}"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ item.name }}' '{{ item.url }}' {{ item.icon | default('') }}"
+    creates: "~/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}"
