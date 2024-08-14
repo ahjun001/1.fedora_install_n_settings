@@ -3,7 +3,7 @@
 # Don´t use spaces in app_name , it will be used to create a directory, and then won't make the script idempotent
 # Every few months the system sends a message for the apps to be re-built.
 # Latest check on Nativefier   $ nativefier --version   52.0.0
-# Update with $ npm install -g nativefier@latest
+# Update with $ sudo npm install -g nativefier@latest
 # Then erase all app directories under ~/.local/bin  and build again with Ansible
 
 # Ensure Node.js and npm are installed
