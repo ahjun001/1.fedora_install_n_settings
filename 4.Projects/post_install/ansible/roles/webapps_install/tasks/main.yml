@@ -48,7 +48,9 @@
         icon: ""
       - name: Test_my_speed
         url: "https://www.testmyspeed.com/"
-        icon: "/usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
+        # icon: "/usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
+        # icon: "/home/perubu/.local/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
+        icon: ""
       - name: Trello
         url: "{{ trello_weblink }}"
         icon: ""
