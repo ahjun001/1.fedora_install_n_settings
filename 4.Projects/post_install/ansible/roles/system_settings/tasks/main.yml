@@ -35,16 +35,18 @@
     path: "{{ ansible_env.HOME }}/.config/plasma-localrc"
     values:
       - { group: Formats, key: LANG, value: "en_IE.UTF-8" }
-      - { group: Formats, key: LC_DATE, value: "en_IE.UTF-8" }
+      - { group: Formats, key: LC_CTYPE, value: "en_IE.UTF-8" }
+      - { group: Formats, key: LC_NUMERIC, value: "en_IE.UTF-8" }
       - { group: Formats, key: LC_TIME, value: "en_IE.UTF-8" }
-      - { group: Formats, key: LC_MONETARY, value: "en_IE.UTF-8" }
-      - { group: Formats, key: LC_CTYPE, value: "C.UTF-8" }
       - { group: Formats, key: LC_COLLATE, value: "C.UTF-8" }
-      - { group: Formats, key: LC_MEASUREMENT, value: "C.UTF-8" }
+      - { group: Formats, key: LC_MONETARY, value: "en_IE.UTF-8" }
+      - { group: Formats, key: LC_MESSAGES, value: "en_IE.UTF-8" }
+      - { group: Formats, key: LC_PAPER, value: "C.UTF-8" }
       - { group: Formats, key: LC_NAME, value: "C.UTF-8" }
       - { group: Formats, key: LC_ADDRESS, value: "C.UTF-8" }
       - { group: Formats, key: LC_TELEPHONE, value: "C.UTF-8" }
-      - { group: Formats, key: LC_PAPER, value: "C.UTF-8" }
+      - { group: Formats, key: LC_MEASUREMENT, value: "C.UTF-8" }
+      - { group: Formats, key: LC_IDENTIFICATION, value: "en_IE.UTF-8" }
 
 - name: Reload KDE Plasma configuration 1
   ansible.builtin.command: qdbus org.kde.KWin /KWin reconfigure
