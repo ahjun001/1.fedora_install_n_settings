@@ -21,17 +21,18 @@
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
     # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
+    # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
 
     # - system_settings # not idempotent
     # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
     
-    - connect_to_a_vm
-    - config_dnf
+    # - connect_to_a_vm
+   # - config_dnf
     - update_all_packages
     - snapper_install
     - dnf_many_install
-    - dot_bashrc_modif
+    # - dot_bashrc_modif
     - vim_install
     - nvim_install
     - bashrc_edit
@@ -47,7 +48,7 @@
     - startup_apps_setup
     - virtm_install
     - telegram_install
-    - foxit_reader_install
+   # - foxit_reader_install
 
     # - debug
     # - test

@@ -13,7 +13,7 @@
       - prename # Fedora only
       - thunderbird
       - git
-      - ffmpeg-free   # cinnamon
+      # - ffmpeg-free   # cinnamon only
       - hunspell-fr
       - libreoffice-langpack-fr
       - hyphen-fr
@@ -23,7 +23,7 @@
       - levien-inconsolata-fonts # necessary for calibre
       - calibre
       - torbrowser-launcher.noarch
-      - numberstation  # 2FA authenticator for github.com
+      - numberstation # 2FA authenticator for github.com
       - bleachbit # clean system's and packages' cache, cookies, ...
       - filezilla
       - rubygem-asciidoctor
