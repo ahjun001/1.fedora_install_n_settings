@@ -45,7 +45,7 @@
     - shellspec_install
     - webapps_install
     - anki_install
-    - startup_apps_setup
+    # - startup_apps_setup
     - virtm_install
     - telegram_install
    # - foxit_reader_install

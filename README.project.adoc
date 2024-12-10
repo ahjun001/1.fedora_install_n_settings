@@ -62,6 +62,10 @@ Subvolumes
 |root | btrfs subvolume | btrfs | 457.34 MiB | | *`/`*
 |===
 
+
+== Set-up Chinese image::
+link: https://userbase.kde.org/Tutorials/Kimpanel
+
 == Technically
 
 Mostly done with Ansible and bash scripts.
