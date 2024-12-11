@@ -1,4 +1,4 @@
-= Video quick build project
+= Fedora fresh install, re-install, & post-install steps
 :backend: asciidoctor
 :github-flavored:  // enables GitHub-specific features like tables, task lists, and fenced code blocks
 ifndef::env-github[:icons: font]
@@ -47,17 +47,20 @@ Disks
 ^| Device ^| Type ^| Format ^| Size ^| Label ^| Mountpoint
 |nvme0n1p1 | partition | efi | 600 MiB| | /boot/efi
 |nvme0n1p2 | partition | ext4 | 1024 MiB | | /boot
-|fedora | btfrs volume | btrfs | 475.35 GiB | fedora |<nothing here> 
+|nvme0n1p3
+luks-... | btfrs volume | btrfs | 475.35 GiB | fedora |<nothing here> 
+|nvme0n1p4 | partition | fat32 | 3072 MiB | VMSHAREHOST | /mnt/VMSHAREHOST
 |===
 
 Subvolumes
 [width=80%, cols=¨3,2,2,2,2,3¨]
 |===
 ^| Device ^| Type ^| Format ^| Size ^| Label ^| Mountpoint
-|Mediatheque | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/Mediatheque
-|TPad_mimi | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/TPad_mimi
-|TPad_safe | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/TPad_safe
+|IHD_mimi | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/IHD_mimi
+|IHD_safe | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/IHD_safe
 |VMs | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/VMs
+|Mediatheque | btrfs subvolume | btrfs | 457.34 MiB | | /mnt/Mediatheque
+|Thunderbird | btrfs subvolume | btrfs | 457.34 MiB | | /home/perubu/.thunderbird
 |home | btrfs subvolume | btrfs | 457.34 MiB | | /home
 |root | btrfs subvolume | btrfs | 457.34 MiB | | *`/`*
 |===
