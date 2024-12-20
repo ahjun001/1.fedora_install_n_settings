@@ -36,5 +36,6 @@
       - cabextract # required to install chinese fonts for WeChat
       - gimp
       - kdenlive
+      - btrbk
       # - discord
     state: latest
