@@ -8,7 +8,7 @@
       - htop # Todo: learn & update flashcard
       - gparted
       - gnome-disk-utility
-      - neofetch
+      # - neofetch
       - btrfs-assistant # Fedora only
       - prename # Fedora only
       - thunderbird

@@ -14,12 +14,12 @@
   vars:
     vm_domain: "fedora40-cinnamon" # replace with your VM's domain name
   vars_files:
-    - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
-    - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
-    - /mnt/TPad_mimi/mimi_in_the_cloud/trello_mimi.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
+    # - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
+    # - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
+    # - /mnt/TPad_mimi/mimi_in_the_cloud/trello_mimi.yml
+    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
+    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
+    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
@@ -36,18 +36,18 @@
     - vim_install
     - nvim_install
     - bashrc_edit
-    - speedtest_CLI_install
+    # - speedtest_CLI_install
     - vscode_install
     - brave_install
-    - chrome_install
-    - vlc_install
+    # - chrome_install
+    # - vlc_install
     - git_global_setup # requires become: false in the playing playbook
     - shellspec_install
     - webapps_install
     - anki_install
     # - startup_apps_setup
     - virtm_install
-    - telegram_install
+    # - telegram_install
    # - foxit_reader_install
 
     # - debug
