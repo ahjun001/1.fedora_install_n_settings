@@ -4,7 +4,7 @@
 - name: Install virt-manager
   become: true
   ansible.builtin.dnf:
-    name: virt-manager
+    name: "@virtualization"
     state: latest
 
 - name: Add user to libvirt group
@@ -13,7 +13,19 @@
     name: "{{ ansible_user }}"
     groups: libvirt
     append: yes
-      
+
+- name: Ensure libvirtd service is started
+  become: true
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: started
+
+- name: Ensure libvirtd service is enabled
+  become: true
+  ansible.builtin.systemd:
+    name: libvirtd
+    enabled: yes
+
 # task file for dot_bashrc_modif
 - name: Add export LIBVIRT_DEFAULT_URI to ~/.bashrc
   lineinfile:

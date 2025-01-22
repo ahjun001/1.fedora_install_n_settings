@@ -19,7 +19,6 @@
       - hyphen-fr
       - libreoffice-grammalecte
       - meld # for Gnome
-      - kompare # for KDE Plasma
       - levien-inconsolata-fonts # necessary for calibre
       - calibre
       - torbrowser-launcher.noarch
@@ -38,4 +37,5 @@
       - kdenlive
       - yt-dlp
       # - discord
+      - dolphin
     state: latest

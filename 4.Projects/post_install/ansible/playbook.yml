@@ -43,7 +43,7 @@
     # - vlc_install
     - git_global_setup # requires become: false in the playing playbook
     - shellspec_install
-    - webapps_install
+    # - webapps_install
     - anki_install # add ANKI_WAYLAND=1 in .bashrc
     # - startup_apps_setup
     - virtm_install

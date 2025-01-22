@@ -15,6 +15,10 @@ endif::[]
 // :sectnums: // gets ToC sections to be numbered
 :sectnumlevels: 3 // max # of numbering levels
 
+== Todo:
+
+* update subvolume list
+
 == Summary
 
 After a fresh install, this automates:
