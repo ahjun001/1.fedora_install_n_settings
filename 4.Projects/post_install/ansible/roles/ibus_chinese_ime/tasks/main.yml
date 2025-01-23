@@ -4,7 +4,7 @@
   ansible.builtin.lineinfile:
     path: /etc/environment
     line: "GTK_IM_MODULE=ibus"
-    state: present
+    state: latest
 
 - name: Log out and log in again
   ansible.builtin.shell: "dbus-send --type=method_call --dest=org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout int32:0 int32:0 int32:0"

@@ -18,5 +18,5 @@
 - name: Install Visual Studio Code
   package:
     name: code
-    state: present
+    state: latest
   become: true

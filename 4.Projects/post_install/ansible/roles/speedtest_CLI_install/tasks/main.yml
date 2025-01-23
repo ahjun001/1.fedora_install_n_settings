@@ -2,16 +2,16 @@
 
 - name: Install necessary packages
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - gcc
       - python-devel
-    state: present
+    state: latest
 
 - name: Install Python package
   ansible.builtin.pip:
     name: aiohttp
-    state: present
+    state: latest
 
 - name: Check if Ookla repository exists
   become: true
@@ -27,15 +27,15 @@
 
 - name: Install speedtest
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: speedtest
-    state: present
+    state: latest
 
 - name: Add alias to ~/.bashrc
   ansible.builtin.lineinfile:
     path: /home/{{ ansible_user }}/.bashrc
     line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'"
-    state: present
+    state: latest
 
 # - name: check if last line of .bashrc is empty
 #   shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc) ]]"

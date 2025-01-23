@@ -1,7 +1,7 @@
 ---
 # task file for nvim install
 - name: dnf install nvim
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: neovim
     state: latest
   become: true

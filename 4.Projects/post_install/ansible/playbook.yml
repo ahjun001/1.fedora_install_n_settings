@@ -1,6 +1,6 @@
 ---
 # playbook.yml
-# run with:  $ ansible-playbook -Ki hosts playbook.yml --ask-vault-pass
+# run with:  $ ansible-playbook -i hosts playbook.yml --ask-vault-pass -K
 # the local ansible.cfg file should contain the following lines
 # [defaults]
 # vault_password_file   = /tmp/.vault_pass.txt
@@ -24,7 +24,7 @@
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
     
-    - connect_to_a_vm
+    # - connect_to_a_vm
     - update_all_packages
     - snapper_install
     - dnf_many_install

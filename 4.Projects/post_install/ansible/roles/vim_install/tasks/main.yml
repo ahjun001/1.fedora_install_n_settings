@@ -1,17 +1,35 @@
 ---
-# task file for vim install
-- name: dnf install vim-X11
-  ansible.builtin.dnf:
+# Install Vim based on the display server
+- name: Detect the display server (Wayland or X11)
+  ansible.builtin.shell: |
+    if echo $XDG_SESSION_TYPE | grep -q "wayland"; then
+      echo "wayland"
+    else
+      echo "x11"
+    fi
+  register: display_server
+  changed_when: false
+
+- name: Install vim for Wayland
+  become: yes
+  ansible.builtin.package:
+    name: vim
+    state: latest
+  when: display_server.stdout == "wayland"
+
+- name: Install vim-X11 for X11
+  become: yes
+  ansible.builtin.package:
     name: vim-X11
     state: latest
-  become: true
+  when: display_server.stdout == "x11"
 
-- name: Test if vimrc exists, fail if it does not
+- name: Test if the source exists, fail if it does not
   ansible.builtin.file:
     path: /home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc
     state: file
 
-- name: Ensure ~/.vim/ exists
+- name: Ensure ~/.vim/ directory exists
   ansible.builtin.file:
     path: /home/{{ ansible_user }}/.vim
     state: directory
@@ -19,6 +37,12 @@
     group: "{{ ansible_user }}"
     owner: "{{ ansible_user }}"
 
+- name: Create symbolic link for vimrc
+  ansible.builtin.file:
+    src: /home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc
+    dest: /home/{{ ansible_user }}/.vim/vimrc
+    state: link
+    force: yes
 # - name: Ensure directories exist, create if it does not
 #   ansible.builtin.file:
 #     path: "{{ item }}"
@@ -32,10 +56,3 @@
 #     - /home/{{ ansible_user }}/.vim/backup
 #     - /home/{{ ansible_user }}/.vim/undo
 #     - /home/{{ ansible_user }}/.vim/view
-
-- name: Create symbolic link for vimrc
-  ansible.builtin.file:
-    src: /home/{{ ansible_user }}/Documents/Github/2.1.vim/1.Install/vimrc
-    dest: /home/{{ ansible_user }}/.vim/vimrc
-    state: link
-    force: yes

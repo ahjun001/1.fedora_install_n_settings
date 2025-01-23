@@ -3,7 +3,7 @@
 
 - name: Install virt-manager
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: "@virtualization"
     state: latest
 

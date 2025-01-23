@@ -2,9 +2,9 @@
 # tasks file to install google-chrome
 - name: Install Third Party Repositories
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: fedora-workstation-repositories
-    state: present
+    state: latest
 
 - name: Enable the Google Chrome repo
   become: true
@@ -14,6 +14,6 @@
 
 - name: Install Google Chrome
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: google-chrome-stable
-    state: present
+    state: latest

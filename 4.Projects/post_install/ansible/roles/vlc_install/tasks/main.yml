@@ -31,11 +31,11 @@
 
 # fedora_version has been set in all cases
 - name: Install RPM Fusion repository
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
   become: true
 
 - name: Install VLC
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: vlc
   become: true

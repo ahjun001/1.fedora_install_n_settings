@@ -13,9 +13,9 @@
   changed: vm_ip_changed
 
 - name: Install software using SSH
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: figlet
-    state: present
+    state: latest
   delegate_to: "{{ hostvars['vm']['ansible_host'] }}"
   vars:
     ansible_user: "perubu"

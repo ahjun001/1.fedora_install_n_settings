@@ -9,7 +9,7 @@
 # Ensure Node.js and npm are installed
 - name: Ensure Node.js and npm are installed
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - nodejs
       - npm

@@ -2,7 +2,7 @@
 # tasks file to install dnf packages without having anything to set
 - name: dnf install multiple packages
   become: true # now required since the playbook set it to false
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       # - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
       - htop # Todo: learn & update flashcard

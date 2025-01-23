@@ -15,13 +15,13 @@
   authorized_key:
     user: "{{ ansible_user }}"
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    state: present
+    state: latest
   when: vm_ip.stdout | length > 0
 
 - name: Install figlet package on VM
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: figlet
-    state: present
+    state: latest
   become: yes
   become_user: "{{ ansible_user }}"
   delegate_to: "{{ vm_ip.stdout }}"

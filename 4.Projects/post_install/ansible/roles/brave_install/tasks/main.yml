@@ -1,8 +1,8 @@
 # tasks to install brave
 - name: Install dnf-plugins-core
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: dnf-plugins-core
-    state: present
+    state: latest
   become: true
 
 - name: Check brave-browser repository status and enable it
@@ -32,7 +32,7 @@
   become: true
 
 - name: Install Brave browser
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: brave-browser
     state: latest
   become: true

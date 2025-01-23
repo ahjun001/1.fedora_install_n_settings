@@ -15,9 +15,9 @@
   changed_when: "'added in ansible' in result.msg"
 
 - name: Install software using SSH
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: figlet
-    state: present
+    state: latest
   delegate_to: "{{ vm_ip.stdout }}"
   vars:
     ansible_user: "perubu"
