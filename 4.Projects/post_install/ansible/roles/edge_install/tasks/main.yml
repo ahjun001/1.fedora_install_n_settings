@@ -1,0 +1,45 @@
+---
+# edge_install
+# edge seems to be the only browser that still allows Chinese -> English webpage translation
+
+- name: Import the Microsoft GPG key
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /etc/pki/rpm-gpg/microsoft.asc
+    mode: '0644'
+  become: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Import the Microsoft GPG key (Debian-based)
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  become: yes
+  when: ansible_os_family == "Debian"
+
+- name: Add Microsoft Edge repository (RedHat-based)
+  ansible.builtin.yum_repository:
+    name: microsoft-edge
+    description: Microsoft Edge Browser
+    baseurl: https://packages.microsoft.com/yumrepos/edge
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  become: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Add Microsoft Edge repository (Debian-based)
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/edge {{ ansible_distribution_release }} main"
+    state: present
+    filename: microsoft-edge
+  become: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure Microsoft Edge is installed and up-to-date
+  ansible.builtin.package:
+    name: microsoft-edge-stable
+    state: latest
+    update_cache: yes
+  become: yes

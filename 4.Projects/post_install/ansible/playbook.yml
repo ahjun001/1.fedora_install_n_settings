@@ -25,18 +25,19 @@
     - key_vault_pwd_setup
     
     # - connect_to_a_vm
-    - update_all_packages
-    - snapper_install
-    - dnf_many_install
-    - vim_install
-    - nvim_install
-    - bashrc_edit
-    - vscode_install
-    - brave_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - anki_install # add ANKI_WAYLAND=1 in .bashrc
-    - virtm_install
+    # - update_all_packages
+    # - snapper_install
+    # - dnf_many_install
+    # - vim_install
+    # - nvim_install
+    # - bashrc_edit
+    # - vscode_install
+    # - brave_install
+    # - git_global_setup # requires become: false in the playing playbook
+    # - shellspec_install
+    # - anki_install # add ANKI_WAYLAND=1 in .bashrc
+    # - virtm_install
+    - edge_install
 
     # - debug
     # - test
