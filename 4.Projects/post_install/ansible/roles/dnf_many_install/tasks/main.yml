@@ -38,4 +38,9 @@
       - yt-dlp
       # - discord
       - dolphin
+      - gnome-calculator
+      - bridge-utils # required to build a bridged network
+      - libvirt-daemon-config-network # required to build a bridged network
+      - arp-scan
+
     state: latest
