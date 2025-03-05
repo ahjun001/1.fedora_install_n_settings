@@ -12,37 +12,36 @@
   become_method: sudo
   become: false # the only way for git_global_setup to work in regular user instead of root
   vars:
-    vm_domain: "fedora40-cinnamon" # replace with your VM's domain name
+    vm_domain: "fedora41-cinnamon" # replace with your VM's domain name
   vars_files:
-    # - /mnt/TPad_mimi/mimi_in_the_cloud/ansible_vault.yml
-    # - /mnt/TPad_mimi/mimi_in_the_cloud/gh_mimi.yml
-    # - /mnt/TPad_mimi/mimi_in_the_cloud/trello_mimi.yml
-    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
-    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
-    - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
+    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/ansible_vault.yml
+    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/gh_mimi.yml
+    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/trello_mimi.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
+    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
-    
+
     # - connect_to_a_vm
     - update_all_packages
-    - snapper_install
-    - dnf_many_install
-    - vim_install
-    - nvim_install
-    - bashrc_edit
-    - vscode_install
-    - brave_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - anki_install # add ANKI_WAYLAND=1 in .bashrc
-    - virtm_install
-    - edge_install
-
+    # - snapper_install
+    - dnf5_many_install
+    # - vim_install
+    # - nvim_install
+    # - bashrc_edit
+    # - vscode_install
+    # - brave_install
+    # - git_global_setup # requires become: false in the playing playbook
+    # - shellspec_install
+    # - anki_install # add ANKI_WAYLAND=1 in .bashrc
+    # - virtm_install
+    # - edge_install
+    # - webapps_install
     # - debug
     # - test
     # - speedtest_CLI_install
-    # - webapps_install
     # - startup_apps_setup
     # - telegram_install
     # - foxit_reader_install
@@ -50,7 +49,5 @@
     # - vlc_install
     # - dot_bashrc_modif
     # - config_dnf
-
     # - system_settings # not idempotent
     # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
-    

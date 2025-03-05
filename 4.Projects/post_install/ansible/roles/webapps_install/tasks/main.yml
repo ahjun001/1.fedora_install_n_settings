@@ -5,6 +5,7 @@
 # Latest check on Nativefier   $ nativefier --version   52.0.0
 # Update with $ sudo npm install -g nativefier@latest
 # Then erase all app directories under ~/.local/bin  and build again with Ansible
+# On install, Webapps can be launched from ~/local/bin/<webapp>/<webapp>
 
 # Ensure Node.js and npm are installed
 - name: Ensure Node.js and npm are installed
@@ -64,3 +65,51 @@
   shell:
     cmd: "cd ~/.local/bin && nativefier --name '{{ item.name }}' '{{ item.url }}' {{ item.icon | default('') }}"
     creates: "~/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}"
+
+- name: Create .desktop files for webapps
+  become: false
+  vars:
+    webapp_urls:
+      - name: Bard
+        url: "https://bard.google.com/chat/3292a98e6af645e6"
+        icon: ""
+      - name: Bing_search
+        url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
+        icon: ""
+      - name: TLFi
+        url: "http://atilf.atilf.fr/"
+        icon: "/home/perubu/.local/share/icons/atilf.ico"
+      - name: DeepAi
+        url: "https://deepai.org/chat"
+        icon: ""
+      - name: GSearch
+        url: "https://www.google.com.hk/?hl=en-US&fg=1"
+        icon: ""
+      - name: le_Conjugueur
+        url: "https://leconjugueur.lefigaro.fr/"
+        icon: "/home/perubu/.local/share/Le_conjugueur.png"
+      - name: Test_my_speed
+        url: "https://www.testmyspeed.com/"
+        icon: ""
+      - name: Trello
+        url: "{{ trello_weblink }}"
+        icon: "/home/perubu/.local/share/icons/trello-icon.svg"
+      - name: WhatsApp
+        url: "https://web.whatsapp.com/"
+        icon: "/home/perubu/.local/share/icons/whatsapp-tile.svg"
+      - name: YouTube
+        url: "https://youtube.com/"
+        icon: "/home/perubu/.local/share/icons/youtube-icon.svg"
+  loop: "{{ webapp_urls }}"
+  copy:
+    content: |
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name={{ item.name }}
+      Exec={{ ansible_user_dir }}/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}
+      Icon={{ item.icon | default('') }}
+      Categories=Network;WebBrowser;
+      Terminal=false
+    dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item.name }}.desktop"
+    mode: "0644"

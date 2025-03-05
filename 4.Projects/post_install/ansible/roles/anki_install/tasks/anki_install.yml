@@ -2,7 +2,7 @@
 # task file for anki_install
 - name: Install zstd
   become: true
-  dnf:
+  ansible.builtin.package:
     name: zstd
     state: latest
 

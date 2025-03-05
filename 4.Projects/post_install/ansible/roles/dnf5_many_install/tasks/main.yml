@@ -45,5 +45,6 @@
       - klavaro # typing tutor
       - ktouch # typing tutor
       - inkscape
+      - mpv
 
     state: latest
