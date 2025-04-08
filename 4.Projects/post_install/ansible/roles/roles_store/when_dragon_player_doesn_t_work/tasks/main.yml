@@ -4,5 +4,5 @@
   ansible.builtin.package:
     name:
       - mpv
-      - mplayer
+      # - mplayer # mpv offers enhanced features and better support in Fedora
       # - haruna  maybe not necessary
