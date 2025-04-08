@@ -30,7 +30,7 @@
       - audacity
       - tldr
       - wine
-      - wine.i686
+      # - wine.i686  # 32 bit version not necessary any more
       - winetricks # required to install chinese fonts for WeChat
       - cabextract # required to install chinese fonts for WeChat
       - gimp
