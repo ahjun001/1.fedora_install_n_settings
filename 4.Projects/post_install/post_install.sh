@@ -36,6 +36,7 @@ for repo in \
     2.2.asciidoctor \
     2.2.bash \
     2.2.ffmpeg \
+    2.2.libvirt \
     2.2.nvim \
     2.2.shellspec \
     2.2.vscode \
