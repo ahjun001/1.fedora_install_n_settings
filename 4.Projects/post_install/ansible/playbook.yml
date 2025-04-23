@@ -14,17 +14,17 @@
   vars:
     vm_domain: "fedora41-cinnamon" # replace with your VM's domain name
   vars_files:
-    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/ansible_vault.yml
-    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/gh_mimi.yml
-    - /mnt/BTRFS_HEAD/IHD_mimi/mimi_in_the_cloud/trello_mimi.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
-    # - /run/media/perubu/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
+    # - /home/{{ansible_user}}/Documents/IHD_mimi/mimi_in_the_cloud/ansible_vault.yml
+    # - /home/{{ansible_user}}/Documents/IHD_mimi/mimi_in_the_cloud/gh_mimi.yml
+    # - /home/{{ansible_user}}/Documents/IHD_mimi/mimi_in_the_cloud/trello_mimi.yml
+    - /run/media/{{ansible_user}}/USB_mimi/mimi_in_the_cloud/ansible_vault.yml
+    - /run/media/{{ansible_user}}/USB_mimi/mimi_in_the_cloud/gh_mimi.yml
+    - /run/media/{{ansible_user}}/USB_mimi/mimi_in_the_cloud/trello_mimi.yml
   roles:
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
 
-    # - connect_to_a_vm
+    - connect_to_a_vm
     - update_all_packages
     - snapper_install
     - dnf5_many_install
@@ -39,16 +39,16 @@
     - virtm_install
     - edge_install
     - webapps_install
-    - debug
-    - test
-    - speedtest_CLI_install
     - startup_apps_setup
-    - telegram_install
-    - foxit_reader_install
-    - chrome_install
-    - vlc_install
     - dot_bashrc_modif
     ######
+    # - telegram_install
+    # - foxit_reader_install
+    # - chrome_install
+    # - vlc_install
+    # - speedtest_CLI_install
+    # - debug
+    # - test
     # - config_dnf
     # - system_settings # not idempotent
     # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data

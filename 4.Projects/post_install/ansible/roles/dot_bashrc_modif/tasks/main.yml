@@ -4,4 +4,4 @@
   lineinfile:
     path: ~/.bashrc
     line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '"
-    state: latest
+    state: present

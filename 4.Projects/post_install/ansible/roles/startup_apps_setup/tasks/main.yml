@@ -1,28 +1,60 @@
 ---
 # task file for startup_apps_setup
 
-- name: Define list of desktop entries
-  set_fact:
-    desktop_entries:
-      - name: sys_monitor
-        exec: "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
-        filename: "sys_monitor.desktop"
-        comment: "Start System Monitor on login"
-      - name: thunderbird_1.daily
-        exec: "thunderbird -p '1.daily'"
-        filename: "thunderbird_1.daily.desktop"
-        comment: "Autostart Thunderbird (1.daily)"
-      - name: thunderbird_2.google&yahoo
-        exec: "thunderbird -p '2.google&yahoo'"
-        filename: "thunderbird_2.google&yahoo.desktop"
-        comment: "Autostart Thunderbird (2.google&yahoo)"
-      # - name: speedtest
-      #   exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
-      #   filename: "xyz.ketok.Speedtest.desktop"
-      #   comment: "Autostart Speedtest"
+# - name: Define list of desktop entries
+#   set_fact:
+#     desktop_entries:
+#       - name: sys_monitor
+#         exec: "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
+#         filename: "sys_monitor.desktop"
+#         comment: "Start System Monitor on login"
+#       - name: thunderbird_1.daily
+#         exec: "thunderbird -p '1.daily'"
+#         filename: "thunderbird_1.daily.desktop"
+#         comment: "Autostart Thunderbird (1.daily)"
+#       - name: thunderbird_2.google&yahoo
+#         exec: "thunderbird -p '2.google&yahoo'"
+#         filename: "thunderbird_2.google&yahoo.desktop"
+#         comment: "Autostart Thunderbird (2.google&yahoo)"
+#       # - name: speedtest
+#       #   exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
+#       #   filename: "xyz.ketok.Speedtest.desktop"
+#       #   comment: "Autostart Speedtest"
 
-- name: Check if file exists and create if not
-  include_tasks: create_desktop_files.yml
-  loop: "{{ desktop_entries }}"
-  loop_control:
-    loop_var: item
+# - name: Check if file exists and create if not
+#   include_tasks: create_desktop_files.yml
+#   loop: "{{ desktop_entries }}"
+#   loop_control:
+#     loop_var: item
+
+- name: Autostart disk usage -- Ensure directory exists
+  ansible.builtin.file:
+    path:  "/home/{{ ansible_user }}/.config/systemd/user/"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+  become: yes
+
+- name: Autostart disk usage -- Check if file exists
+  stat:
+    path: "/home/{{ ansible_user }}/.config/systemd/user/konsole-autostart.service"
+  register: file_stat
+
+- name: Autostart disk usage -- Create desktop files for autostart
+  copy:
+    dest: "/home/{{ ansible_user }}/.config/systemd/user/konsole-autostart.service"
+    content: |
+      #konsole-autostart.service
+      [Unit]
+      Description=Konsole autostart disk usage
+      After=plasma-workspace.target
+
+      [Service]
+      ExecStart=/usr/bin/konsole -e "bash -c 'df -h /; bash'"
+      Restart=on-failure
+      WorkingDirectory=%h
+
+      [Install]
+      WantedBy=default-target
+  when: not file_stat.stat.exists

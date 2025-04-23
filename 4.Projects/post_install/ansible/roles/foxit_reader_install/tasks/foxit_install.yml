@@ -1,18 +1,18 @@
 ---
 # task file for foxit_install
 
-# - name: Download Foxit
-#   get_url:
-#     url: "https://cdn01.foxitsoftware.com/pub/foxit/reader/desktop/linux/2.x/2.4/en_us/FoxitReader.enu.setup.2.4.5.0727.x64.run.tar.gz"
-#     dest: /tmp/FoxitReader.tar.gz
-#     mode: "0644"
+- name: Download Foxit
+  get_url:
+    url: "https://cdn01.foxitsoftware.com/pub/foxit/reader/desktop/linux/2.x/2.4/en_us/FoxitReader.enu.setup.2.4.5.0727.x64.run.tar.gz"
+    dest: /tmp/FoxitReader.tar.gz
+    mode: "0644"
 
-# - name: Extract Foxit
-#   unarchive:
-#     src: /tmp/FoxitReader.tar.gz
-#     dest: /tmp
-#     remote_src: yes
-#     creates: "FoxitReader.enu.setup.2.4.5.0727(rb70e8df).x64.run"
+- name: Extract Foxit
+  unarchive:
+    src: /tmp/FoxitReader.tar.gz
+    dest: /tmp
+    remote_src: yes
+    creates: "FoxitReader.enu.setup.2.4.5.0727(rb70e8df).x64.run"
 
 - name: Run Foxit installation application
   become: true

@@ -50,7 +50,7 @@
       - name: Test_my_speed
         url: "https://www.testmyspeed.com/"
         # icon: "/usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
-        # icon: "/home/perubu/.local/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
+        # icon: "/home/{{ansible_user}}/.local/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
         icon: ""
       - name: Trello
         url: "{{ trello_weblink }}"
@@ -78,7 +78,7 @@
         icon: ""
       - name: TLFi
         url: "http://atilf.atilf.fr/"
-        icon: "/home/perubu/.local/share/icons/atilf.ico"
+        icon: "/home/{{ansible_user}}/.local/share/icons/atilf.ico"
       - name: DeepAi
         url: "https://deepai.org/chat"
         icon: ""
@@ -87,19 +87,19 @@
         icon: ""
       - name: le_Conjugueur
         url: "https://leconjugueur.lefigaro.fr/"
-        icon: "/home/perubu/.local/share/Le_conjugueur.png"
+        icon: "/home/{{ansible_user}}/.local/share/Le_conjugueur.png"
       - name: Test_my_speed
         url: "https://www.testmyspeed.com/"
         icon: ""
       - name: Trello
         url: "{{ trello_weblink }}"
-        icon: "/home/perubu/.local/share/icons/trello-icon.svg"
+        icon: "/home/{{ansible_user}}/.local/share/icons/trello-icon.svg"
       - name: WhatsApp
         url: "https://web.whatsapp.com/"
-        icon: "/home/perubu/.local/share/icons/whatsapp-tile.svg"
+        icon: "/home/{{ansible_user}}/.local/share/icons/whatsapp-tile.svg"
       - name: YouTube
         url: "https://youtube.com/"
-        icon: "/home/perubu/.local/share/icons/youtube-icon.svg"
+        icon: "/home/{{ansible_user}}/.local/share/icons/youtube-icon.svg"
   loop: "{{ webapp_urls }}"
   copy:
     content: |
