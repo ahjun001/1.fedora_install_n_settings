@@ -12,7 +12,7 @@
     content: |
       [Desktop Entry]
       Type=Application
-      Exec=/bin/bash -c "{{ item.exec }}"
+      Exec={{ item.exec }}
       Hidden=false
       NoDisplay=false
       X-GNOME-Autostart-enabled=true

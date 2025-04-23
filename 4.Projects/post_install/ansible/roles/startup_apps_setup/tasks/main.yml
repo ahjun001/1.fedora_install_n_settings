@@ -1,99 +1,41 @@
 ---
 # task file for startup_apps_setup
 
-# - name: Define list of desktop entries
-#   set_fact:
-#     desktop_entries:
-#       - name: sys_monitor
-#         exec: "plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
-#         filename: "sys_monitor.desktop"
-#         comment: "Start System Monitor on login"
-#       - name: thunderbird_1.daily
-#         exec: "thunderbird -p '1.daily'"
-#         filename: "thunderbird_1.daily.desktop"
-#         comment: "Autostart Thunderbird (1.daily)"
-#       - name: thunderbird_2.google&yahoo
-#         exec: "thunderbird -p '2.google&yahoo'"
-#         filename: "thunderbird_2.google&yahoo.desktop"
-#         comment: "Autostart Thunderbird (2.google&yahoo)"
-#       # - name: speedtest
-#       #   exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
-#       #   filename: "xyz.ketok.Speedtest.desktop"
-#       #   comment: "Autostart Speedtest"
+- name: Define list of desktop entries
+  set_fact:
+    desktop_entries:
+      - name: sys_monitor
+        exec: "/bin/bash -c plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
+        filename: "sys_monitor.desktop"
+        comment: "Start System Monitor on login"
+      - name: konsole-disk-usage
+        exec: konsole -e "bash -c 'df -h /; bash'"
+        filename: "konsole-disk-usage.desktop"
+        comment: "Show disk usage on login"
+      # - name: thunderbird_1.daily
+      #   exec: "thunderbird -p '1.daily'"
+      #   filename: "thunderbird_1.daily.desktop"
+      #   comment: "Autostart Thunderbird (1.daily)"
+      # - name: thunderbird_2.google&yahoo
+      #   exec: "thunderbird -p '2.google&yahoo'"
+      #   filename: "thunderbird_2.google&yahoo.desktop"
+      #   comment: "Autostart Thunderbird (2.google&yahoo)"
+      # - name: speedtest
+      #   exec: "/home/"{{ ansible_user }}"/.local/bin/Test_my_speed-linux-x64/Test_my_speed"
+      #   filename: "xyz.ketok.Speedtest.desktop"
+      #   comment: "Autostart Speedtest"
 
-# - name: Check if file exists and create if not
-#   include_tasks: create_desktop_files.yml
-#   loop: "{{ desktop_entries }}"
-#   loop_control:
-#     loop_var: item
+- name: Check if file exists and create if not
+  include_tasks: create_desktop_files.yml
+  loop: "{{ desktop_entries }}"
+  loop_control:
+    loop_var: item
 
-  # - name: Autostart disk usage -- Ensure directory exists
-  #   ansible.builtin.file:
-  #     path:  "/home/{{ ansible_user }}/.config/systemd/user/"
-  #     state: directory
-  #     owner: "{{ ansible_user }}"
-  #     group: "{{ ansible_user }}"
-  #     mode: "0755"
-  #   become: yes
-
-  # - name: Autostart disk usage -- Check if file exists
-  #   stat:
-  #     path: "/home/{{ ansible_user }}/.config/systemd/user/konsole-autostart.service"
-  #   register: file_stat
-
-  # - name: Autostart disk usage -- Create desktop files for autostart
-  #   copy:
-  #     dest: "/home/{{ ansible_user }}/.config/systemd/user/konsole-autostart.service"
-  #     content: |
-  #       #konsole-autostart.service
-  #       [Unit]
-  #       Description=Konsole autostart disk usage
-  #       After=plasma-workspace.target
-
-  #       [Service]
-  #       ExecStart=/usr/bin/konsole -e "bash -c 'df -h /; bash'"
-  #       Restart=on-failure
-  #       WorkingDirectory=%h
-
-  #       [Install]
-  #       WantedBy=default-target
-  #   when: not file_stat.stat.exists
-
-- name: Ensure user systemd directory exists (as root)
+- name: Autostart disk usage -- Ensure directory exists
   ansible.builtin.file:
-    path: "/home/{{ ansible_user }}/.config/systemd/user"
+    path: "/home/{{ ansible_user }}/.config/systemd/user/"
     state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: "0755"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
   become: yes
-
-- name: Deploy konsole-autostart.service (as user)
-  ansible.builtin.copy:
-    dest: "/home/{{ ansible_user }}/.config/systemd/user/konsole-autostart.service"
-    content: |
-      [Unit]
-      Description=Konsole autostart disk usage
-      After=plasma-workspace.target
-      PartOf=graphical-session.target
-
-      [Service]
-      Type=simple
-      ExecStart=/usr/bin/konsole --hold -e "bash -c 'df -h /; echo; btrfs filesystem usage / | grep -i \"used\|free\"; exec bash'"
-      Restart=on-failure
-      WorkingDirectory=%h
-
-      [Install]
-      WantedBy=graphical-session.target
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0644"
-  become: no  # Critical - must run as target user
-
-- name: Enable user service
-  ansible.builtin.systemd:
-    name: "konsole-autostart.service"
-    scope: "user"
-    enabled: yes
-    state: started
-  become: no  # Must run as target user

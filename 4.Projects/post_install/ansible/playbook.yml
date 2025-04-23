@@ -24,7 +24,6 @@
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
 
-    - connect_to_a_vm
     - update_all_packages
     - snapper_install
     - dnf5_many_install
@@ -42,6 +41,7 @@
     - startup_apps_setup
     - dot_bashrc_modif
     ######
+    # - connect_to_a_vm
     # - telegram_install
     # - foxit_reader_install
     # - chrome_install
