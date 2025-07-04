@@ -1,20 +1,12 @@
 ---
 # tasks file for config dnf
-# - name: Configure dnf
-#   ansible.builtin.lineinfile:
-#     path: /etc/dnf/dnf.conf
-#     line: "{{ item }}"
-#     state: latest
-#   with_items:
-#     - "fastestmirror=1"
-#     # - "max_parallel_downloads=10"
-#   become: true
-# ---
-- name: Set DNF fastestmirror option
-  become: true
-  command: dnf5 config-manager setopt fastestmirror=true
-  register: dnf_config_result
 
-- name: Display result
-  debug:
-    var: dnf_config_result
+- name: Configure dnf
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "fastestmirror=true"
+    # - "max_parallel_downloads=10"
+  become: true
