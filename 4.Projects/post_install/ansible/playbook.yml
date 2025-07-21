@@ -48,7 +48,7 @@
     - edge_install
     - webapps_install
     - startup_apps_setup
-    - dot_bashrc_modif
+    - wine_install
     ######
     # - connect_to_a_vm
     # - telegram_install

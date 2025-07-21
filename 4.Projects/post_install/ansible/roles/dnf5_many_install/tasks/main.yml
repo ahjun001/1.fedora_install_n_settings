@@ -4,7 +4,7 @@
   become: true # now required since the playbook set it to false
   ansible.builtin.package:
     name:
-      # - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
+      - xclip # Todo: reinstall vim & nvim and check which clipboard mgr is installed
       - htop # Todo: learn & update flashcard
       - gparted
       - gnome-disk-utility
@@ -29,10 +29,6 @@
       - transmission
       - audacity
       - tldr
-      - wine
-      # - wine.i686  # 32 bit version not necessary any more
-      - winetricks # required to install chinese fonts for WeChat
-      - cabextract # required to install chinese fonts for WeChat
       - gimp
       - kdenlive
       - yt-dlp

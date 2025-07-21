@@ -34,6 +34,10 @@
         regexp: "alias pj_update_fedora=",
         line: "alias pj_update_fedora='sudo dnf5 upgrade --refresh -y && sudo dnf5 autoremove -y && sudo dnf5 clean all'",
       }
+    - {
+        regexp: "alias rootfind=",
+        line: "alias rootfind='sudo find / \\( -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \\) -prune -o '",
+      }
     - { regexp: "export VISUAL=", line: "export VISUAL=nvim" }
     - { regexp: "export EDITOR=", line: "export EDITOR=nvim" }
 
