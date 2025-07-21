@@ -1,0 +1,49 @@
+---
+# task file for wine_install
+
+# tasks file to install packages
+- name: install multiple packages
+  become: true # now required since the playbook set it to false
+  ansible.builtin.package:
+    name:
+      - wine
+      # - wine.i686  # 32 bit version not necessary any more
+      # - winetricks # required to install chinese fonts for WeChat
+      # - cabextract # required to install chinese fonts for WeChat
+    state: latest
+
+- name: append bashrc with a blank line
+  ansible.builtin.lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: " "
+    state: present
+
+- name: Add aliases and exports to ~/.bashrc
+  ansible.builtin.lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    regexp: "^{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - {
+        regexp: "# --- added by Ansible / wine install ---",
+        line: "# --- added by Ansible / wine install ---",
+      }
+    - {
+        regexp: "export WINEPREFIXES=",
+        line: "export WINEPREFIXES=$HOME/.local/share/wineprefixes",
+      }
+    - {
+        regexp: "export BASE_PREFIX=",
+        line: "export BASE_PREFIX=$WINEPREFIXES/base",
+      }
+
+- name: check if last line of .bashrc is empty
+  ansible.builtin.shell: "[[ -z $(tail -n 1 /home/{{ ansible_user }}/.bashrc ) ]]"
+  register: result
+  failed_when: false
+  changed_when: false
+
+- name: Append blank line to .bashrc if needed
+  ansible.builtin.shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
+  when: result.rc != 0
