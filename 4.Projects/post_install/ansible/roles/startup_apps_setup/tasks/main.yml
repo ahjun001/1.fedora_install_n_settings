@@ -4,14 +4,18 @@
 - name: Define list of desktop entries
   set_fact:
     desktop_entries:
-      - name: sys_monitor
-        exec: "/bin/bash -c plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
-        filename: "sys_monitor.desktop"
-        comment: "Start System Monitor on login"
-      - name: konsole-disk-usage
-        exec: konsole -e "bash -c 'df -h /; bash'"
-        filename: "konsole-disk-usage.desktop"
-        comment: "Show disk usage on login"
+      - name: konsole-check-journalctl
+        exec: konsole -e "bash -c 'journalctl -p 3 -xb ; bash'"
+        filename: "konsole-check-journalctl"
+        comment: "Show journalctl errors on login"
+      # - name: sys_monitor
+      #   exec: "/bin/bash -c plasma-systemmonitor --page-name 'History' >/dev/null 2>&1"
+      #   filename: "sys_monitor.desktop"
+      #   comment: "Start System Monitor on login"
+      # - name: konsole-disk-usage
+      #   exec: konsole -e "bash -c 'df -h /; bash'"
+      #   filename: "konsole-disk-usage.desktop"
+      #   comment: "Show di sk usage on login"
       # - name: thunderbird_1.daily
       #   exec: "thunderbird -p '1.daily'"
       #   filename: "thunderbird_1.daily.desktop"
