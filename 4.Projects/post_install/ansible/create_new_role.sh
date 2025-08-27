@@ -26,6 +26,7 @@ fi
 mkdir -p "$ARG"
 cat <<. >>"$ARG"/main.yml
 ---
+# ./roles/$1/tasks/main.yml
 # task file for $1
 
 .

@@ -7,14 +7,14 @@
     url: https://packages.microsoft.com/keys/microsoft.asc
     dest: /etc/pki/rpm-gpg/microsoft.asc
     mode: '0644'
-  become: yes
+  become: true
   when: ansible_os_family == "RedHat"
 
 - name: Import the Microsoft GPG key (Debian-based)
   ansible.builtin.apt_key:
     url: https://packages.microsoft.com/keys/microsoft.asc
     state: present
-  become: yes
+  become: true
   when: ansible_os_family == "Debian"
 
 - name: Add Microsoft Edge repository (RedHat-based)
@@ -26,7 +26,7 @@
     gpgcheck: yes
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
     state: present
-  become: yes
+  become: true
   when: ansible_os_family == "RedHat"
 
 - name: Add Microsoft Edge repository (Debian-based)
@@ -34,7 +34,7 @@
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/edge {{ ansible_distribution_release }} main"
     state: present
     filename: microsoft-edge
-  become: yes
+  become: true
   when: ansible_os_family == "Debian"
 
 - name: Ensure Microsoft Edge is installed and up-to-date
@@ -42,4 +42,4 @@
     name: microsoft-edge-stable
     state: latest
     update_cache: yes
-  become: yes
+  become: true

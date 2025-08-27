@@ -31,7 +31,6 @@
       - tldr
       - gimp
       - kdenlive
-      - yt-dlp
       # - discord
       - dolphin
       - gnome-calculator
@@ -42,5 +41,6 @@
       - ktouch # typing tutor
       - inkscape
       - mpv
+      - yt-dlp
 
     state: latest

@@ -30,7 +30,7 @@
   ansible.builtin.file:
     path: /root/.config/nvim/
     state: directory
-  become: yes
+  become: true
 
 - name: Link init.vim for superuser
   ansible.builtin.file:
@@ -38,4 +38,4 @@
     dest: /root/.config/nvim/init.vim
     state: link
     force: yes
-  become: yes
+  become: true

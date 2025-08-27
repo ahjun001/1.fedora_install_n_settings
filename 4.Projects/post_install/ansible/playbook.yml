@@ -50,6 +50,7 @@
     - startup_apps_setup
     - wine_install
     ######
+    # - yt-dlp_install
     # - connect_to_a_vm
     # - telegram_install
     # - foxit_reader_install

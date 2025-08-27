@@ -11,14 +11,14 @@
   changed_when: false
 
 - name: Install vim for Wayland
-  become: yes
+  become: true
   ansible.builtin.package:
     name: vim
     state: latest
   when: display_server.stdout == "wayland"
 
 - name: Install vim-X11 for X11
-  become: yes
+  become: true
   ansible.builtin.package:
     name: vim-X11
     state: latest

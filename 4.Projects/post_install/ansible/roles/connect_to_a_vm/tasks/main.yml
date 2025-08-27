@@ -17,7 +17,7 @@
     state: latest
   # delegate_to: "{{ vm_ip.stdout }}"
   delegate_to: "192.168.122.133"
-  become: yes
+  become: true
   vars:
     ansible_user: "perubu"
     ansible_port: 22
