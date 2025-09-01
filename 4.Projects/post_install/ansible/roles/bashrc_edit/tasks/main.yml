@@ -19,8 +19,8 @@
         line: "# --- added by Ansible ---",
       }
     - {
-        regexp: "alias stest_speedtest=",
-        line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'",
+        regexp: "alias stest_speedtest=unlock_brave",
+        line: "alias unlock_brave='rm -v $HOME/.config/BraveSoftware/Brave-Browser/SingletonLock'",
       }
     - {
         regexp: "alias rootfind=",
@@ -50,3 +50,13 @@
 - name: Append blank line to .bashrc if needed
   ansible.builtin.shell: "echo '' >>  /home/{{ ansible_user }}/.bashrc"
   when: result.rc != 0
+#
+#
+# - {
+#     regexp: "alias stest_speedtest=",
+#     line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'",
+#   }
+# - {
+#     regexp: "=",
+#     line: "alias stest_speedtest='speedtest >/dev/null 2>&1 &'",
+#   }

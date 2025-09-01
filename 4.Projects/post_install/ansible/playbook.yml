@@ -50,10 +50,10 @@
     - startup_apps_setup
     - wine_install
     ######
+    # - foxit_reader_install
     # - yt-dlp_install
     # - connect_to_a_vm
     # - telegram_install
-    # - foxit_reader_install
     # - chrome_install
     # - vlc_install
     # - speedtest_CLI_install
