@@ -1,0 +1,12 @@
+---
+# ./roles/new_LO_doc_Dolphin_right_click/tasks/main.yml
+# task file for new_LO_doc_Dolphin_right_click
+
+- name: Ensure Templates directory soft link exists
+  ansible.builtin.file:
+    src: "/home/{{ ansible_user }}/Templates"
+    dest: "/home/{{ ansible_user }}/.local/share/templates"
+    state: link
+    force: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"

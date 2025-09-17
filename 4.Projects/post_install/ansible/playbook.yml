@@ -33,22 +33,23 @@
     - key_vault_pwd_setup
 
     - config_dnf
-    - update_all_packages
-    - snapper_install
-    - dnf5_many_install
-    - vim_install
-    - nvim_install
-    - bashrc_edit
-    - vscode_install
-    - brave_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - anki_install # add ANKI_WAYLAND=1 in .bashrc
-    - virtm_install
-    - edge_install
-    - webapps_install
-    - startup_apps_setup
-    - wine_install
+    # - update_all_packages
+    # - snapper_install
+    # - dnf5_many_install
+    # - vim_install
+    # - nvim_install
+    # - bashrc_edit
+    # - vscode_install
+    # - brave_install
+    # - git_global_setup # requires become: false in the playing playbook
+    # - shellspec_install
+    # - anki_install # add ANKI_WAYLAND=1 in .bashrc
+    # - virtm_install
+    # - edge_install
+    # - webapps_install
+    # - startup_apps_setup
+    # - wine_install
+    # - new_LO_doc_Dolphin_right_click
     ######
     # - foxit_reader_install
     # - yt-dlp_install

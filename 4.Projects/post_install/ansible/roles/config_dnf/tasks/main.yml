@@ -1,12 +1,36 @@
 ---
 # tasks file for config dnf
 
-- name: Configure dnf
-  ansible.builtin.lineinfile:
-    path: /etc/dnf/dnf.conf
-    line: "{{ item }}"
-    state: present
-  with_items:
-    - "fastestmirror=true"
-    # - "max_parallel_downloads=10"
+# - name: Configure dnf
+#   ansible.builtin.lineinfile:
+#     path: /etc/dnf/dnf.conf
+#     line: "{{ item }}"
+#     state: present
+#   with_items:
+#     - "fastestmirror=true"
+#     # - "max_parallel_downloads=10"
+#   become: true
+
+- name: Ensure DNF configuration directory exists
   become: true
+  ansible.builtin.file:
+    path: /etc/dnf/libdnf5.conf.d
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Create DNF user settings configuration
+  become: true
+  ansible.builtin.copy:
+    content: |
+      [main]
+      max_parallel_downloads=10
+      clean_requirements_on_remove=True
+      log_level=info
+      exclude=brave-browser*
+    dest: /etc/dnf/libdnf5.conf.d/80-user-settings.conf
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true # Creates a backup of existing file if different
