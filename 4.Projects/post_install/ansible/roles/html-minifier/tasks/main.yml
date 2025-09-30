@@ -3,7 +3,7 @@
 # task file for html-minifier
 
 - name: Install html-minifier globally using npm
-  npm:
+  ansible.builtin.npm:
     name: html-minifier
     global: true
     state: present
