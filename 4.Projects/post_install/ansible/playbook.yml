@@ -50,6 +50,7 @@
     - startup_apps_setup
     - wine_install
     - new_LO_doc_Dolphin_right_click
+    - html-minifier
     ######
     # - foxit_reader_install
     # - yt-dlp_install

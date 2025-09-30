@@ -1,0 +1,9 @@
+---
+# ./roles/html-minifier/tasks/main.yml
+# task file for html-minifier
+
+- name: Install html-minifier globally using npm
+  npm:
+    name: html-minifier
+    global: true
+    state: present
