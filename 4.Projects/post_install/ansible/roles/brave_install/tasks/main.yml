@@ -32,7 +32,7 @@
   become: true
 
 - name: Install Brave browser
-  ansible.builtin.package:
+  ansible.dnf.package:
     name: brave-browser
     state: latest
   become: true
