@@ -4,7 +4,9 @@
 # Every few months the system sends a message for the apps to be re-built.
 # Latest check on Nativefier   $ nativefier --version   52.0.0
 # Update with $ sudo npm install -g nativefier@latest
-# Then erase all app directories under ~/.local/bin  and build again with Ansible
+# Then erase all app directories under ~/.local/bin 
+# $ find . -type d -exec rm -rf {} \;
+# and build again with Ansible
 # On install, Webapps can be launched from ~/local/bin/<webapp>/<webapp>
 
 # Ensure Node.js and npm are installed
