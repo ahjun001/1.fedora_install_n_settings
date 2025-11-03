@@ -1,53 +1,48 @@
 ---
 # task file for bashrc_edit
 
-- name: Ensure whereis_n_ls function block is in .bashrc
+- name: Ensure whereis_n_ls function is idempotently added to .bashrc
   ansible.builtin.blockinfile:
-    state: present
-    path: /home/{{ ansible_user }}/.bashrc
+    path: "/home/{{ ansible_user }}/.bashrc"
     block: |
       whereis_n_ls() {
           ls -l $(whereis "$1" | awk '{for(i=2;i<=NF;i++) print $i}' | tr '\n' ' ')
       }
-      # END ANSIBLE MANAGED BLOCK
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    marker: "# {mark} WHEREIS_N_LS FUNCTION BLOCK"
+    create: yes
+    mode: 0644
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    backup: yes
 
-- name: Ensure aliases are present in .bashrc
-  ansible.builtin.lineinfile:
-    path: /home/{{ ansible_user }}/.bashrc
-    regexp: "^{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-    # insertafter: EOF
-  loop:
-    - { regexp: "", line: "" }
-    - {
-        regexp: "# --- added by Ansible ---",
-        line: "# --- added by Ansible ---",
-      }
-    - {
-        regexp: "^alias unlock_brave=",
-        line: "alias unlock_brave='rm -v $HOME/.config/BraveSoftware/Brave-Browser/SingletonLock'",
-      }
-    - { regexp: "^alias rootfind=", line: "alias rootfind='sudo find / \
-          $ -path \"/.snapshots\" -o -path \"/home/.snapshots\" -o -path \"/run\" \
-          $ -prune -o '" }
-    - {
-        regexp: "^alias clear_GPUCache=",
-        line: "alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \\;'",
-      }
-    - {
-        regexp: "^alias pj_update_fedora=",
-        line: "alias pj_update_fedora='sudo dnf5 upgrade --refresh -y && sudo dnf5 autoremove -y && sudo dnf5 clean all'",
-      }
-    - { regexp: "^export VISUAL=", line: "export VISUAL=nvim" }
-    - { regexp: "^export EDITOR=", line: "export EDITOR=nvim" }
-    - { regexp: "^$", line: "" }
+- name: Define bashrc aliases and environment variables
+  ansible.builtin.blockinfile:
+    path: "/home/{{ ansible_user }}/.bashrc"
+    block: |
+      # --- added by Ansible ---
+      alias unlock_brave='rm -v $HOME/.config/BraveSoftware/Brave-Browser/SingletonLock'
+      alias rootfind='sudo find / \
+        -path "/.snapshots" -o -path "/home/.snapshots" -o -path "/run" \
+        -prune -o '
+      alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \;'
+      alias pj_update_fedora='sudo dnf5 upgrade --refresh -y && sudo dnf5 autoremove -y && sudo dnf5 clean all'
 
-- name: Ensure last line is empty
+      export VISUAL=nvim
+      export EDITOR=nvim
+    marker: "# {mark} ANSIBLE MANAGED ALIASES AND EXPORTS"
+    create: yes
+    mode: 0644
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    backup: yes
+
+- name: Ensure .bashrc ends with an empty line
   ansible.builtin.lineinfile:
-    path: /home/{{ ansible_user }}/.bashrc
+    path: "/home/{{ ansible_user }}/.bashrc"
     regexp: "^$"
     line: ""
-    state: present
     insertafter: EOF
+    create: yes
+    mode: 0644
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
