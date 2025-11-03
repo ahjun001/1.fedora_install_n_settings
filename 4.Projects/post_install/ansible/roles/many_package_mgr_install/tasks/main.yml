@@ -1,5 +1,5 @@
 ---
-# tasks file to install dnf packages without having anything to set
+# tasks file to install packages without having to set the package manager
 - name: dnf install multiple packages
   become: true # now required since the playbook set it to false
   ansible.builtin.package:

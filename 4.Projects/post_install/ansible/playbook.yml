@@ -35,7 +35,7 @@
     - config_dnf
     - update_all_packages
     - snapper_install
-    - dnf5_many_install
+    - many_package_mgr_install
     - vim_install
     - nvim_install
     - bashrc_edit
