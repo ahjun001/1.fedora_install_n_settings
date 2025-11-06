@@ -1,0 +1,11 @@
+---
+# group_vars/workstation.yml
+# Workstation‑specific
+packages_ws:
+  - libvirt
+  - virt-manager
+  - virt-viewer
+  - qemu-kvm
+  - qemu-img
+  - python3-libvirt
+  - python3-libguestfs

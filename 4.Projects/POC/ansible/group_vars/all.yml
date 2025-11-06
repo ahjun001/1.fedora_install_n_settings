@@ -1,0 +1,12 @@
+---
+# group_vars/all.yml
+# Things that apply everywhere
+dnf_cache_valid_time: 600
+packages_core:
+  - dnf5
+  - git
+  - vim
+  - python3
+  - figlet
+  - ansible
+  - python3-requests

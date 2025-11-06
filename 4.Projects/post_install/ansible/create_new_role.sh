@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ./create_new_role.sh
 
 set -euo pipefail
 

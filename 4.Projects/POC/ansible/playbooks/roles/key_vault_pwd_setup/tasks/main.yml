@@ -1,0 +1,13 @@
+---
+# playbooks/roles/key_vault_pwd_setup/tasks/main.yml
+- name: Load variable files dynamically
+  ansible.builtin.include_vars:
+    file: "{{ lookup('first_found', { 'files': item.paths, 'skip': false }) }}"
+  loop: "{{ var_file_paths }}"
+  run_once: true
+
+- name: Create Vault password file on local machine
+  copy:
+    content: "{{ vault_password }}"
+    dest: "/tmp/.vault_pass.txt"
+    mode: "0600"

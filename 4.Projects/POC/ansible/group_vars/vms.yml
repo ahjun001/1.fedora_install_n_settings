@@ -1,0 +1,7 @@
+---
+# group_vars/vms.yml
+# VM‑specific (you can keep them empty; they’re here just for completeness)
+packages_vm:
+  - dnf5
+  - python3
+  - vim

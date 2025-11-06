@@ -1,0 +1,11 @@
+---
+# ./roles/figlet_install/tasks/main.yml
+# task file for figlet_install
+
+- name: dnf install multiple packages
+  become: true # now required since the playbook set it to false
+  ansible.builtin.package:
+    name:
+      - figlet
+
+    state: present # present / absent

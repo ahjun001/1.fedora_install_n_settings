@@ -1,0 +1,5 @@
+---
+# playbooks/roles/virt_setup/vars/main.yml
+# Default image pool (you can override in inventory/host_vars)
+image_pool: default
+image_path: /var/lib/libvirt/images

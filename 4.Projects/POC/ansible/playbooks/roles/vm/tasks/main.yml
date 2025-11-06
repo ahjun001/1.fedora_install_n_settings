@@ -1,0 +1,7 @@
+---
+# playbooks/roles/vm/tasks/main.yml
+# Example of a task that does something VM‑specific
+- name: Make sure the VM has the latest updates
+  become: true
+  ansible.builtin.dnf5:
+    state: latest

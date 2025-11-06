@@ -1,0 +1,37 @@
+---
+# playbooks/vm_setup.yml
+- name: Create and run VMs from Fedora ISO images
+  hosts: workstation
+  gather_facts: true
+  become: true
+
+  vars:
+    # Example list of VMs you want to create.
+    # Add or delete entries as you wish.
+    vms_to_create:
+      - name: fedora41-kde
+        iso: "Fedora-KDE-Desktop-Live-43-1.6.x86_64.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000 # in MB
+
+      - name: fedora41-kinos
+        iso: "Fedora-Kinoite-ostree-x86_64-43-1.6.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+      - name: fedora41-cinnamon
+        iso: "Fedora-Cinnamon-Live-43-1.6.x86_64.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+      - name: fedora41-everything
+        iso: "Fedora-Everything-netinst-x86_64-42-1.1.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+  roles:
+    - virt_setup

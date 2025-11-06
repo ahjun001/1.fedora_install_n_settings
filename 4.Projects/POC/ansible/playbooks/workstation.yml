@@ -1,0 +1,9 @@
+---
+# playbooks/workstation.yml
+- name: Configure workstation (libvirt, virt‑manager, etc.)
+  hosts: workstation
+  gather_facts: true
+  become: true
+
+  roles:
+    - workstation

@@ -32,34 +32,4 @@
     # some roles, not used here, are stored in roles_store
     - key_vault_pwd_setup
 
-    - config_dnf
-    - update_all_packages
-    - snapper_install
-    - many_package_mgr_install
-    - vim_install
-    - nvim_install
-    - bashrc_edit
-    - brave_install
-    - vscode_install
-    - git_global_setup # requires become: false in the playing playbook
-    - shellspec_install
-    - anki_install # add ANKI_WAYLAND=1 in .bashrc
-    - virtm_install
-    - edge_install
-    - webapps_install
-    - startup_apps_setup
-    - wine_install
-    - new_LO_doc_Dolphin_right_click
-    - html-minifier
-    ######
-    # - foxit_reader_install
-    # - yt-dlp_install
-    # - connect_to_a_vm
-    # - telegram_install
-    # - chrome_install
-    # - vlc_install
-    # - speedtest_CLI_install
-    # - debug
-    # - test
-    # - system_settings # not idempotent
-    # - ibus_chinese_ime  # CAREFUL, this will log out -- loosing all non saved data
+    - figlet_install

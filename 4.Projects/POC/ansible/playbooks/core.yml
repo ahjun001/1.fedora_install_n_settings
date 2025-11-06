@@ -1,0 +1,9 @@
+---
+# playbooks/core.yml
+- name: Install core Fedora packages and settings
+  hosts: all
+  gather_facts: true
+  become: true
+
+  roles:
+    - common

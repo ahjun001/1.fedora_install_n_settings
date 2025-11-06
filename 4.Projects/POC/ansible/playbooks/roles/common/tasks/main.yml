@@ -1,0 +1,30 @@
+---
+#  playbooks/roles/common/tasks/main.yml
+# 1. Update dnf cache
+- name: Ensure dnf5 cache is fresh
+  become: true
+  ansible.builtin.dnf5:
+    update_cache: yes
+    cache_valid_time: "{{ dnf_cache_valid_time }}"
+
+# 2. Install the core packages
+- name: Install core packages
+  become: true
+  ansible.builtin.dnf5:
+    name: "{{ packages_core }}"
+    state: present
+
+# 3. Add a custom banner
+- name: Install figlet banner
+  become: true
+  ansible.builtin.template:
+    src: figlet_banner.j2
+    dest: /etc/motd
+    mode: "0644"
+
+# 4. Create a simple .bashrc snippet
+- name: Install custom .bashrc snippet
+  template:
+    src: .bashrc.j2
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    mode: "0644"

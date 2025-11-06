@@ -1,0 +1,268 @@
+---
+# inventories/hosts.yml
+all:
+  children:
+    workstation:
+      hosts:
+        localhost:
+          ansible_connection: local
+          ansible_python_interpreter: /usr/bin/python3
+    vms:
+      hosts:
+        192.168.122.133:
+          ansible_user: perubu
+          ansible_python_interpreter: /usr/bin/python3
+---
+# playbook.yml
+# run with:  $ ansible-playbook -i hosts playbook.yml --ask-vault-pass -K
+# the local ansible.cfg file should contain the following lines
+# [defaults]
+# vault_password_file   = /tmp/.vault_pass.txt
+
+# $ ansible-playbook -i hosts playbook.yml --ask-vault-pass -K
+
+- hosts: all
+  remote_user: "{{ ansible_user }}"
+  become_method: sudo
+  become: false # the only way for git_global_setup to work in regular user instead of root
+
+  vars:
+    vm_domain: "fedora41-cinnamon" # replace with your VM's domain name
+    var_file_paths:
+      - name: ansible_vault
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+      - name: gh_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+      - name: trello_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"
+
+  roles:
+    # some roles, not used here, are stored in roles_store
+    - key_vault_pwd_setup
+
+    - figlet_install
+# ./ansible.cfg
+[defaults]
+inventory        = inventories/hosts.yml
+vault_password_file = /tmp/.vault_pass.txt
+remote_user      = perubu
+host_key_checking = False
+forks            = 20
+retry_files_enabled = False
+stdout_callback = yaml
+
+[ssh_connection]
+ssh_args = -o ControlMaster=auto -o ControlPersist=5m---
+# group_vars/all.yml
+# Things that apply everywhere
+dnf_cache_valid_time: 600
+packages_core:
+  - dnf5
+  - git
+  - vim
+  - python3
+  - figlet
+  - ansible
+  - python3-requests
+---
+# group_vars/workstation.yml
+# Workstation‑specific
+packages_ws:
+  - libvirt
+  - virt-manager
+  - virt-viewer
+  - qemu-kvm
+  - qemu-img
+  - python3-libvirt
+  - python3-libguestfs---
+# group_vars/vms.yml
+# VM‑specific (you can keep them empty; they’re here just for completeness)
+packages_vm:
+  - dnf5
+  - python3
+  - vim
+---
+# playbooks/core.yml
+- name: Install core Fedora packages and settings
+  hosts: all
+  gather_facts: true
+  become: true
+
+  roles:
+    - common
+---
+# playbooks/workstation.yml
+- name: Configure workstation (libvirt, virt‑manager, etc.)
+  hosts: workstation
+  gather_facts: true
+  become: true
+
+  roles:
+    - workstation
+---
+# playbooks/vm_setup.yml
+- name: Create and run VMs from Fedora ISO images
+  hosts: vms
+  gather_facts: true
+  become: true
+
+  vars:
+    # Example list of VMs you want to create.
+    # Add or delete entries as you wish.
+    vms_to_create:
+      - name: fedora41-kde
+        iso: "Fedora-KDE-Desktop-Live-43-1.6.x86_64.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000 # in MB
+
+      - name: fedora41-kinos
+        iso: "Fedora-Kinoite-ostree-x86_64-43-1.6.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+      - name: fedora41-cinnamon
+        iso: "Fedora-Cinnamon-Live-43-1.6.x86_64.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+      - name: fedora41-everything
+        iso: "Fedora-Everything-netinst-x86_64-42-1.1.iso"
+        memory: 2048
+        vcpus: 2
+        disk: 20000
+
+  roles:
+    - virt_setup
+---
+# ./roles/figlet_install/tasks/main.yml
+#  playbooks/roles/figlet_install/tasks/main.yml
+# task file for figlet_install
+
+- name: dnf install multiple packages
+  become: true # now required since the playbook set it to false
+  ansible.builtin.package:
+    name:
+      - figlet
+
+    state: present # present / absent
+---
+# playbooks/roles/key_vault_pwd_setup/tasks/main.yml
+- name: Load variable files dynamically
+  ansible.builtin.include_vars:
+    file: "{{ lookup('first_found', { 'files': item.paths, 'skip': false }) }}"
+  loop: "{{ var_file_paths }}"
+  run_once: true
+
+- name: Create Vault password file on local machine
+  copy:
+    content: "{{ vault_password }}"
+    dest: "/tmp/.vault_pass.txt"
+    mode: "0600"
+---
+#  playbooks/roles/common/tasks/main.yml
+# 1. Update dnf cache
+- name: Ensure dnf5 cache is fresh
+  become: true
+  ansible.builtin.dnf5:
+    update_cache: yes
+    cache_valid_time: "{{ dnf_cache_valid_time }}"
+
+# 2. Install the core packages
+- name: Install core packages
+  become: true
+  ansible.builtin.dnf5:
+    name: "{{ packages_core }}"
+    state: present
+
+# 3. Add a custom banner
+- name: Install figlet banner
+  become: true
+  ansible.builtin.template:
+    src: figlet_banner.j2
+    dest: /etc/motd
+    mode: "0644"
+
+# 4. Create a simple .bashrc snippet
+- name: Install custom .bashrc snippet
+  template:
+    src: .bashrc.j2
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    mode: "0644"
+---
+# Nothing special for now – keep for future expansion
+# roles/common/templates/.bashrc.j2
+# Custom additions for every user
+alias ll='ls -alFh'
+export EDITOR=vim# roles/common/templates/figlet_banner.j2
+{{ 'WELCOME TO MY FREDORA ENVIRONMENT' | figlet }}
+---
+# playbooks/roles/workstation/tasks/main.yml
+# Install workstation‑only packages (libvirt, virt‑manager, etc.)
+- name: Install workstation‑only packages
+  become: true
+  ansible.builtin.dnf5:
+    name: "{{ packages_ws }}"
+    state: present
+
+# Make sure libvirtd is enabled & started
+- name: Ensure libvirtd is enabled
+  become: true
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+# Add local user to libvirt group
+- name: Add user to libvirt group
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: libvirt
+    append: yes---
+# playbooks/roles/vm/tasks/main.yml
+# Example of a task that does something VM‑specific
+- name: Make sure the VM has the latest updates
+  become: true
+  ansible.builtin.dnf5:
+    state: latest---
+# playbooks/roles/virt_setup/tasks/main.yml
+# 1. Create a VM domain from an ISO
+- name: Create virtual machines from ISO images
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running
+    uri: qemu:///system
+    memory: "{{ vm_memory }}"
+    vcpus: "{{ vm_vcpus }}"
+    disk:
+      - name: "{{ vm_name }}.qcow2"
+        size: "{{ vm_disk }}"
+        pool: "{{ image_pool }}"
+        type: qcow2
+    os_type: linux
+    arch: x86_64
+    boot:
+      hd: true
+      cdrom: "{{ vm_iso }}"
+    network:
+      - network: default
+        type: network
+  register: virt_result
+  ignore_errors: true
+
+- name: Show the result of VM creation
+  debug:
+    var: virt_result---
+# playbooks/roles/virt_setup/vars/main.yml
+# Default image pool (you can override in inventory/host_vars)
+image_pool: default
+image_path: /var/lib/libvirt/images

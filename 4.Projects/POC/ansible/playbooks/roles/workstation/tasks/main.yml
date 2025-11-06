@@ -1,0 +1,24 @@
+---
+# playbooks/roles/workstation/tasks/main.yml
+# Install workstation‑only packages (libvirt, virt‑manager, etc.)
+- name: Install workstation‑only packages
+  become: true
+  ansible.builtin.dnf5:
+    name: "{{ packages_ws }}"
+    state: present
+
+# Make sure libvirtd is enabled & started
+- name: Ensure libvirtd is enabled
+  become: true
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+# Add local user to libvirt group
+- name: Add user to libvirt group
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: libvirt
+    append: yes
