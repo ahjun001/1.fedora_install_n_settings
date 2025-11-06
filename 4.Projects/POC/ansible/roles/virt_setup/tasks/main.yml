@@ -1,28 +1,47 @@
 ---
 # roles/virt_setup/tasks/main.yml
 - name: Create virtual machines from ISO images
+  community.libvirt.virt_install:
+    name: "{{ item.name }}"
+    uri: qemu:///system
+    memory: "{{ item.memory }}"
+    vcpus: "{{ item.vcpus }}"
+    disks:
+      - size: "{{ item.disk }}"
+        pool: "{{ image_pool }}"
+        format: qcow2
+    cdrom: "{{ image_path }}/{{ item.iso }}"
+    graphics:
+      type: vnc
+      listen: 0.0.0.0
+      port: -1
+    networks:
+      - network: default
+    osinfo:
+      name: fedora-unknown
+      require: false
+    autostart: yes
+    state: present
+  register: virt_result
+  ignore_errors: true
+  loop: "{{ vms_to_create }}"
+
+- name: Ensure VMs are running
   community.libvirt.virt:
     name: "{{ item.name }}"
     state: running
     uri: qemu:///system
-    memory: "{{ item.memory }}"
-    vcpus: "{{ item.vcpus }}"
-    disk:
-      - name: "{{ item.name }}.qcow2"
-        size: "{{ item.disk }}"
-        pool: "{{ image_pool }}"
-        type: qcow2
-    os_type: linux
-    arch: x86_64
-    boot:
-      hd: true
-      cdrom: "{{ item.iso }}"
-    network:
-      - network: default
-        type: network
-  register: virt_result
-  ignore_errors: true
   loop: "{{ vms_to_create }}"
+  ignore_errors: true  # Will fail in check mode as VMs don't actually exist
+  when: not ansible_check_mode  # Only try to start VMs when not in check mode
+
+- name: Ensure VMs are running
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    state: running
+    uri: qemu:///system
+  loop: "{{ vms_to_create }}"
+  ignore_errors: true
 
 - name: Show the result of VM creation
   debug:
