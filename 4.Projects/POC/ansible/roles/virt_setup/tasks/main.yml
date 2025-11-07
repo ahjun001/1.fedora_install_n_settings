@@ -11,29 +11,39 @@
         pool: "{{ image_pool }}"
         format: qcow2
     cdrom: "{{ image_path }}/{{ item.iso }}"
+    # Configure SPICE graphics with clipboard sharing
     graphics:
-      type: vnc
+      type: spice
       listen: 0.0.0.0
-      port: -1
+      autoport: yes
+      image_compression: off
+    # Configure channels for SPICE features
+    channels:
+      - type: spicevmc
+        target_type: virtio
+        target_name: com.redhat.spice.0
+    # Configure USB redirection through SPICE
+    redirdevs:
+      - type: spicevmc
+        bus: usb
+      - type: spicevmc
+        bus: usb
+    # Configure audio through SPICE
+    sound:
+      - model: ich9
+    # Configure clock to use local time
+    clock:
+      offset: localtime
     networks:
       - network: default
     osinfo:
       name: fedora-unknown
       require: false
-    autostart: yes
+    autostart: no  # Don't start VMs automatically
     state: present
   register: virt_result
   ignore_errors: true
   loop: "{{ vms_to_create }}"
-
-- name: Ensure VMs are running
-  community.libvirt.virt:
-    name: "{{ item.name }}"
-    state: running
-    uri: qemu:///system
-  loop: "{{ vms_to_create }}"
-  ignore_errors: true  # Will fail in check mode as VMs don't actually exist
-  when: not ansible_check_mode  # Only try to start VMs when not in check mode
 
 - name: Ensure VMs are running
   community.libvirt.virt:

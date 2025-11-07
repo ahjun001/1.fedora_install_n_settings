@@ -5,33 +5,9 @@
   gather_facts: true
   become: true
 
-  vars:
-    # Example list of VMs you want to create.
-    # Add or delete entries as you wish.
-    vms_to_create:
-      - name: fedora43-kde
-        iso: "Fedora-KDE-Desktop-Live-43-1.6.x86_64.iso"
-        memory: 2048
-        vcpus: 2
-        disk: 20 # in MB
-
-      - name: fedora43-kinos
-        iso: "Fedora-Kinoite-ostree-x86_64-43-1.6.iso"
-        memory: 2048
-        vcpus: 2
-        disk: 20
-
-      - name: fedora43-Workstation
-        iso: "Fedora-Workstation-Live-43-1.6.x86_64.iso"
-        memory: 2048
-        vcpus: 2
-        disk: 20
-
-      - name: fedora43-everything
-        iso: "Fedora-Everything-netinst-x86_64-42-1.1.iso"
-        memory: 2048
-        vcpus: 2
-        disk: 20
+  # Include VM definitions from vars file
+  vars_files:
+    - ../vars/vms.yml
 
   roles:
     - virt_setup
