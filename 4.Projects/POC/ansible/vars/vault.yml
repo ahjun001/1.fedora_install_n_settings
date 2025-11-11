@@ -1,0 +1,15 @@
+---
+# define where to get the vault
+    var_file_paths:
+      - name: ansible_vault
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+      - name: gh_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+      - name: trello_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"

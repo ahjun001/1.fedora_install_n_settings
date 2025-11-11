@@ -15,22 +15,16 @@
     graphics:
       type: spice
       listen: 0.0.0.0
-      autoport: yes
-      image_compression: off
-    # Configure channels for SPICE features
-    channels:
-      - type: spicevmc
-        target_type: virtio
-        target_name: com.redhat.spice.0
-    # Configure USB redirection through SPICE
-    redirdevs:
-      - type: spicevmc
-        bus: usb
-      - type: spicevmc
-        bus: usb
+    # Configure channels for SPICE features (single mapping expected)
+    channel:
+      type: spicevmc
+    # USB redirection through SPICE was removed here because the collection
+    # expects a mapping for 'redirdev' (not a list) in this version.
+    # If you need USB redirection, add a properly formatted mapping for
+    # your collection version or configure the XML manually later.
     # Configure audio through SPICE
     sound:
-      - model: ich9
+      model: ich9
     # Configure clock to use local time
     clock:
       offset: localtime
@@ -45,14 +39,15 @@
   ignore_errors: true
   loop: "{{ vms_to_create }}"
 
-- name: Ensure VMs are running
-  community.libvirt.virt:
-    name: "{{ item.name }}"
-    state: running
-    uri: qemu:///system
+- name: Check qcow2 files were created
+  ansible.builtin.stat:
+    path: "{{ image_path }}/{{ item.name }}.qcow2"
+  register: disk_stat
   loop: "{{ vms_to_create }}"
-  ignore_errors: true
+  loop_control:
+    label: "{{ item.name }}"
 
-- name: Show the result of VM creation
-  debug:
-    var: virt_result
+- name: Report created disks
+  ansible.builtin.debug:
+    msg: "{{ item.item.name }}: {{ 'present' if item.stat.exists else 'missing' }} (size={{ item.stat.size|default('N/A') }})"
+  loop: "{{ disk_stat.results }}"

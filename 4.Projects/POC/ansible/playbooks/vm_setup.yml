@@ -8,6 +8,8 @@
   # Include VM definitions from vars file
   vars_files:
     - ../vars/vms.yml
+    - ../vars/vault.yml
 
   roles:
+    - key_vault_pwd_setup
     - virt_setup
