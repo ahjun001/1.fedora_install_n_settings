@@ -11,3 +11,6 @@
     content: "{{ vault_password }}"
     dest: "/tmp/.vault_pass.txt"
     mode: "0600"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  become: true
