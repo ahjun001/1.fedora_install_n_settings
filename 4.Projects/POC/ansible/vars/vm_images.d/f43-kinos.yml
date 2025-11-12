@@ -1,0 +1,16 @@
+---
+# vars/vm_images.d/f43-kinos.yml
+# Workflow manifest for f43-kinos VM
+
+f43_kinos_image_config:
+  base_image: f43-kinos-base.qcow2 # immutable golden image (Kinoite/OSTree)
+  current_stage: setup
+  image_pool: default
+  image_path: /var/lib/libvirt/images
+  artifacts:
+    - name: f43-kinos.setup-20251112.qcow2
+      stage: setup
+      backing_image: f43-kinos-base.qcow2
+      is_full_image: false
+      created: null
+      description: "Clean install, ready for provisioning"

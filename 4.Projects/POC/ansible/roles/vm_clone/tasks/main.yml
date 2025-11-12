@@ -54,16 +54,46 @@
   register: convert_result
   when: clone_is_full is defined and clone_is_full
 
-- name: Update vm_images.yml manifest with new artifact
-  ansible.builtin.lineinfile:
-    path: "{{ playbook_dir }}/vars/vm_images.yml"
-    insertafter: "artifacts:"
-    line: |
-      - name: {{ clone_name }}
-        stage: {{ clone_stage }}
-        backing_image: {{ clone_backing_image | default('null') }}
-        is_full_image: {{ clone_is_full | default('false') | string | lower }}
-        created: {{ ansible_date_time.iso8601_basic_short }}
-        description: "{{ clone_description }}"
+- name: Load per-VM image manifest
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/vars/vm_images.d/{{ vm_name }}.yml"
+    name: vm_image_data
+  when: clone_track_artifact is not defined or clone_track_artifact
+
+- name: Build new artifact entry
+  ansible.builtin.set_fact:
+    new_artifact:
+      name: "{{ clone_name }}"
+      stage: "{{ clone_stage }}"
+      backing_image: "{{ clone_backing_image | default(omit) }}"
+      is_full_image: "{{ (clone_is_full | default(false)) | bool }}"
+      created: "{{ ansible_date_time.iso8601 }}"
+      description: "{{ clone_description | default('') }}"
+  when: clone_track_artifact is not defined or clone_track_artifact
+
+- name: Build updated VM image config with new artifact
+  ansible.builtin.set_fact:
+    updated_vm_config: >-
+      {{
+        vm_image_data | combine({
+          vm_name + '_image_config': (
+            vm_image_data[vm_name + '_image_config'] |
+            combine({
+              'artifacts': (vm_image_data[vm_name + '_image_config'].artifacts | default([])) + [ new_artifact ]
+            })
+          )
+        })
+      }}
+  when: clone_track_artifact is not defined or clone_track_artifact
+
+- name: Write updated per-VM manifest
+  ansible.builtin.copy:
+    dest: "{{ playbook_dir }}/vars/vm_images.d/{{ vm_name }}.yml"
+    content: |
+      ---
+      # vars/vm_images.d/{{ vm_name }}.yml
+      # Workflow manifest for {{ vm_name }} VM
+
+      {{ (updated_vm_config | to_nice_yaml) }}
   register: manifest_update
   when: clone_track_artifact is not defined or clone_track_artifact

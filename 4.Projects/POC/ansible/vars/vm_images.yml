@@ -1,35 +1,16 @@
 ---
 # vars/vm_images.yml
-# Track VM images, artifacts, and current workflow stage
-# Used by playbooks/vm_lifecycle.yml to automate cloning, conversion, and provisioning workflows
+# Aggregator for per-VM image manifests
+# Loads all files from vars/vm_images.d/ and merges them into a unified vm_image_config
+#
+# Individual VM manifests are in:
+#   vars/vm_images.d/f43-kde.yml
+#   vars/vm_images.d/f43-kinos.yml
+#   vars/vm_images.d/f43-workstation.yml
+#
+# Each VM file defines a <vm_name>_image_config variable which is merged here.
 
-vm_image_config:
-  fedora43-kde:
-    base_image: fedora43-base.qcow2  # immutable golden image
-    current_stage: setup             # current workflow stage: setup, installed, provisioned, upgraded
-    image_pool: default              # libvirt pool
-    image_path: /var/lib/libvirt/images
-    artifacts:
-      - name: fedora43-kde.setup-20251112.qcow2
-        stage: setup
-        backing_image: fedora43-base.qcow2
-        is_full_image: false
-        created: 2025-11-12T00:00:00Z
-        description: "Clean install, ready for provisioning"
-      - name: fedora43-kde.installed-20251112.qcow2
-        stage: installed
-        backing_image: null
-        is_full_image: true
-        created: 2025-11-12T01:00:00Z
-        description: "OS installed and validated, full independent image"
-      - name: fedora43-kde.provisioned-v1.qcow2
-        stage: provisioned
-        backing_image: fedora43-kde.installed-20251112.qcow2
-        is_full_image: false
-        created: 2025-11-12T02:00:00Z
-        description: "Provisioned with base tools and configs"
-
-# Workflow stages
+# Workflow stages reference
 vm_workflow_stages:
   - setup: "OS install and base config (thin clone from base)"
   - installed: "OS ready, convert to full image (independent artifact)"

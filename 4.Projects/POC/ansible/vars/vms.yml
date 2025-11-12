@@ -2,20 +2,19 @@
 # vars/vms.yml
 # Define VMs to be created
 vms_to_create:
-  - name: fedora43-kde
+  - name: f43-kde
     iso: "Fedora-KDE-Desktop-Live-43-1.6.x86_64.iso"
     memory: 2048
     vcpus: 2
     disk: 20 # in GB
 
-  # Commented out for later installation
-  - name: fedora43-kinos
+  - name: f43-kinos
     iso: "Fedora-Kinoite-ostree-x86_64-43-1.6.iso"
     memory: 2048
     vcpus: 2
     disk: 20
 
-  - name: fedora43-Workstation
+  - name: f43-workstation
     iso: "Fedora-Workstation-Live-43-1.6.x86_64.iso"
     memory: 2048
     vcpus: 2

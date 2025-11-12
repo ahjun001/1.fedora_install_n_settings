@@ -8,32 +8,38 @@
 
 This directory contains Ansible playbooks and helper scripts to automate VM cloning, conversion, and lifecycle management through multiple workflow stages.
 
-The workflow automates the transition from one stage to the next while maintaining clear artifact naming and manifest tracking:
+The workflow automates the transition from one stage to the next while maintaining clear artifact naming and per-VM manifest tracking:
 
 . *setup* → clean OS install, thin clone from base image
 . *installed* → convert thin clone to independent full image
 . *provisioned* → provision applications, thin clone from installed
 . *upgraded* → test OS upgrade, convert to full image
 
-All artifacts are tracked in link:vars/vm_images.yml[] so you always know which stage you're at and which image to work with.
+Each VM's artifacts are tracked in its own manifest file in link:vars/vm_images.d/[] so you always know which stage you're at and which image to work with.
 
 == Files
 
 * link:playbooks/vm_lifecycle.yml[] — Orchestrates lifecycle transitions (setup → installed → provisioned → upgraded)
-* link:roles/vm_clone/tasks/main.yml[] — Creates thin clones, converts to full images, updates manifest
+* link:roles/vm_clone/tasks/main.yml[] — Creates thin clones, converts to full images, updates per-VM manifest
 * link:roles/vm_sysprep/tasks/main.yml[] — Clears machine-specific state before cloning
 * link:scripts/vm_clone_helper.sh[] — Quick manual clone/convert/sysprep operations
-* link:vars/vm_images.yml[] — Central manifest tracking all artifacts and current stage
+* link:vars/vm_images.yml[] — Aggregator manifest (loads per-VM files)
+* link:vars/vm_images.d/[] — Per-VM manifest directory
+  ** link:vars/vm_images.d/f43-kde.yml[]
+  ** link:vars/vm_images.d/f43-kinos.yml[]
+  ** link:vars/vm_images.d/f43-workstation.yml[]
 
 == Quick Start
 
 === 1. Create initial base image (one-time)
 
-Build a clean Fedora 43 VM by hand or automation, then place it at:
+Build a clean VM by hand or automation for each spin, then place at:
 
 [source,bash]
 ----
-/var/lib/libvirt/images/fedora43-base.qcow2
+/var/lib/libvirt/images/f43-kde-base.qcow2        # KDE Spin
+/var/lib/libvirt/images/f43-kinos-base.qcow2      # Kinoite (OSTree)
+/var/lib/libvirt/images/f43-workstation-base.qcow2  # GNOME Workstation
 ----
 
 === 2. Run the setup stage (thin clone from base)
@@ -41,13 +47,13 @@ Build a clean Fedora 43 VM by hand or automation, then place it at:
 [source,bash]
 ----
 ansible-playbook playbooks/vm_lifecycle.yml \
-  -e "vm_name=fedora43-kde lifecycle_action=setup"
+  -e "vm_name=f43-kde lifecycle_action=setup"
 ----
 
 This creates:
 
-* `fedora43-kde.setup-YYYY-MM-DD.qcow2` (thin clone)
-* Domain `fedora43-kde.setup` (defined in libvirt)
+* `f43-kde.setup-YYYY-MM-DD.qcow2` (thin clone)
+* Domain `f43-kde.setup` (defined in libvirt)
 * Manifest entry in link:vars/vm_images.yml[]
 
 Boot the VM and install/configure the OS. When done, proceed to installed stage.
@@ -57,7 +63,7 @@ Boot the VM and install/configure the OS. When done, proceed to installed stage.
 [source,bash]
 ----
 ansible-playbook playbooks/vm_lifecycle.yml \
-  -e "vm_name=fedora43-kde lifecycle_action=installed"
+  -e "vm_name=f43-kde lifecycle_action=installed"
 ----
 
 This:
@@ -71,13 +77,13 @@ This:
 [source,bash]
 ----
 ansible-playbook playbooks/vm_lifecycle.yml \
-  -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+  -e "vm_name=f43-kde lifecycle_action=provisioned"
 ----
 
 This creates:
 
-* `fedora43-kde.provisioned-v1.qcow2` (thin clone, backed by installed)
-* Domain `fedora43-kde.provisioned`
+* `f43-kde.provisioned-v1.qcow2` (thin clone, backed by installed)
+* Domain `f43-kde.provisioned`
 * Manifest entry
 
 Boot the VM, run provisioning playbooks. When done, you can test the upgrade or convert to full.
@@ -87,15 +93,15 @@ Boot the VM, run provisioning playbooks. When done, you can test the upgrade or 
 [source,bash]
 ----
 ansible-playbook playbooks/vm_lifecycle.yml \
-  -e "vm_name=fedora43-kde lifecycle_action=upgraded"
+  -e "vm_name=f43-kde lifecycle_action=upgraded"
 ----
 
 This creates:
 
-* `fedora43-kde.upgrade-test-YYYY-MM-DD.qcow2` (full independent image)
-* Domain `fedora43-kde.upgrade-test`
+* `f43-kde.upgrade-test-YYYY-MM-DD.qcow2` (full independent image)
+* Domain `f43-kde.upgrade-test`
 
-Boot and test OS upgrades. If successful, you can rename the artifact to `fedora42-to-43.kde.upgraded-20251113.qcow2` to preserve lineage.
+Boot and test OS upgrades. If successful, you can rename the artifact to `f42-to-f43.kde.upgraded-20251113.qcow2` to preserve lineage.
 
 == Manual Quick Operations
 
@@ -105,54 +111,72 @@ Use the link:scripts/vm_clone_helper.sh[] script for quick manual clone/convert 
 
 [source,bash]
 ----
-./scripts/vm_clone_helper.sh thin-clone fedora43-base.qcow2 fedora43-kde.setup-20251112.qcow2
+./scripts/vm_clone_helper.sh thin-clone f43-kde-base.qcow2 f43-kde.setup-20251112.qcow2
 ----
 
 === Convert thin to full (independent image):
 
 [source,bash]
 ----
-./scripts/vm_clone_helper.sh convert-full fedora43-kde.setup-20251112.qcow2 fedora43-kde.installed-20251112.qcow2
+./scripts/vm_clone_helper.sh convert-full f43-kde.setup-20251112.qcow2 f43-kde.installed-20251112.qcow2
 ----
 
 === Sysprep domain before clone (clear machine-specific state):
 
 [source,bash]
 ----
-./scripts/vm_clone_helper.sh sysprep fedora43-kde /var/lib/libvirt/images/fedora43-kde.qcow2
+./scripts/vm_clone_helper.sh sysprep f43-kde /var/lib/libvirt/images/f43-kde.qcow2
 ----
 
 == Manifest Structure
 
-The manifest (link:vars/vm_images.yml[]) tracks all artifacts and current workflow stage:
+Each VM has its own manifest file in link:vars/vm_images.d/[]:
+
+* link:vars/vm_images.d/f43-kde.yml[] — KDE Spin workflow manifest
+* link:vars/vm_images.d/f43-kinos.yml[] — Kinoite OSTree workflow manifest
+* link:vars/vm_images.d/f43-workstation.yml[] — GNOME Workstation workflow manifest
+
+Each file tracks that VM's base image and artifact history. Example structure for f43-kde:
 
 [source,yaml]
 ----
-vm_image_config:
-  fedora43-kde:
-    base_image: fedora43-base.qcow2
-    current_stage: setup  # or: installed, provisioned, upgraded
-    artifacts:
-      - name: fedora43-kde.setup-20251112.qcow2
-        stage: setup
-        backing_image: fedora43-base.qcow2
-        is_full_image: false
-        created: 2025-11-12T...Z
-        description: "..."
+f43_kde_image_config:
+  base_image: f43-kde-base.qcow2
+  current_stage: setup  # or: installed, provisioned, upgraded
+  image_pool: default
+  image_path: /var/lib/libvirt/images
+  artifacts:
+    - name: f43-kde.setup-20251112.qcow2
+      stage: setup
+      backing_image: f43-kde-base.qcow2
+      is_full_image: false
+      created: null
+      description: "..."
+    - name: f43-kde.installed-20251112.qcow2
+      stage: installed
+      backing_image: null
+      is_full_image: true
+      created: null
+      description: "..."
 ----
 
-After each playbook run, the manifest is automatically updated with the new artifact.
+The top-level link:vars/vm_images.yml[] acts as an aggregator, loading all per-VM files and merging them into a unified `vm_image_config` dict at runtime.
+
+After each playbook run, the manifest for that specific VM is automatically updated with the new artifact.
 
 == Naming Conventions
 
 * *Stage token*: `setup`, `installed`, `provisioned`, `upgraded`
-* *Format*: `<vm-name>.<stage>-<YYYYMMDD>[-rev].qcow2`
+* *Format*: `<f##-variant>.<stage>-<YYYYMMDD>[-rev].qcow2`
+* *Base image*: `f##-<variant>-base.qcow2` (immutable golden image)
 * *Examples*:
-** `fedora43-kde.setup-20251112.qcow2`
-** `fedora43-kde.installed-20251112.qcow2`
-** `fedora43-kde.provisioned-v1.qcow2`
-** `fedora43-kde.upgrade-test-20251113.qcow2` (for testing)
-** `fedora42-to-43.kde.upgraded-20251113.qcow2` (for preserve lineage: upgraded from 42)
+** `f43-kde.setup-20251112.qcow2`
+** `f43-kde.installed-20251112.qcow2`
+** `f43-kde.provisioned-v1.qcow2`
+** `f43-kde.upgrade-test-20251113.qcow2` (for testing)
+** `f42-to-f43.kde.upgraded-20251113.qcow2` (for preserve lineage: upgraded from 42)
+** `f43-kinos.setup-20251112.qcow2`
+** `f43-workstation.setup-20251112.qcow2`
 
 == Key Concepts
 
@@ -175,6 +199,63 @@ Tool that customizes/clears image state offline (domain must be shut off).
 . *Check the manifest often.* It tells you which stage you're at and which image to work with.
 . *Keep the base image immutable.* Never boot or modify it; always clone from it.
 . *For OS upgrades, explicitly name the artifact to show origin.* Use `fedora42-to-43.kde.upgraded-20251113.qcow2` so it's clear this was upgraded from 42, not freshly installed.
+
+== Adding a New VM
+
+The per-VM manifests (link:vars/vm_images.d/[]) make onboarding new Fedora variants simple. To add a new VM:
+
+1. Create `vars/vm_images.d/f##-newvariant.yml` with a `f##_newvariant_image_config` variable defining base image and initial artifacts (or empty list).
++
+[source,yaml]
+----
+---
+# vars/vm_images.d/f##-newvariant.yml
+# Workflow manifest for f##-newvariant VM
+
+f##_newvariant_image_config:
+  base_image: f##-newvariant-base.qcow2
+  current_stage: setup
+  image_pool: default
+  image_path: /var/lib/libvirt/images
+  artifacts: []
+----
+
+2. Add the per-VM file to `playbooks/vm_lifecycle.yml` vars_files section:
++
+[source,yaml]
+----
+vars_files:
+  - "{{ playbook_dir }}/vars/vm_images.yml"
+  - "{{ playbook_dir }}/vars/vm_images.d/f##-newvariant.yml"
+----
+
+3. Add the new VM to the aggregation in `pre_tasks`:
++
+[source,yaml]
+----
+pre_tasks:
+  - name: Aggregate per-VM image configs into unified vm_image_config
+    set_fact:
+      vm_image_config:
+        f43-kde: "{{ f43_kde_image_config }}"
+        f43-kinos: "{{ f43_kinos_image_config }}"
+        f43-workstation: "{{ f43_workstation_image_config }}"
+        f##-newvariant: "{{ f##_newvariant_image_config }}"
+----
+
+4. Add the VM definition to `vars/vms.yml`:
++
+[source,yaml]
+----
+vms_to_create:
+  - name: f##-newvariant
+    iso: "Fedora-NewVariant-Live-##-X.Y.x86_64.iso"
+    memory: 2048
+    vcpus: 2
+    disk: 20
+----
+
+5. Done! The lifecycle playbook will now recognize the new VM and route lifecycle actions to it automatically.
 
 == Troubleshooting
 
@@ -202,21 +283,28 @@ Tool that customizes/clears image state offline (domain must be shut off).
 
 [source,bash]
 ----
-# 1. Setup stage
-ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=setup"
+# Build base images (one-time per variant)
+# f43-kde-base.qcow2, f43-kinos-base.qcow2, f43-workstation-base.qcow2
+
+# 1. Setup stage for KDE variant
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=setup"
 # Boot VM, install OS, validate. When done:
 
 # 2. Installed stage
-ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=installed"
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=installed"
 # Syspreps and converts to full image. Check manifest for artifact name.
 
 # 3. Provisioned stage
-ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=provisioned"
 # Boot VM, run provisioning playbooks. When done:
 
 # 4. Upgraded stage (optional)
-ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=upgraded"
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=upgraded"
 # Boot VM, test OS upgrade. If successful, optionally rename artifact to show lineage.
+
+# Repeat for other variants (kinos, workstation)
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kinos lifecycle_action=setup"
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-workstation lifecycle_action=setup"
 
 # Always check the manifest:
 cat vars/vm_images.yml

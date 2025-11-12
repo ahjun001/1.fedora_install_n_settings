@@ -2,17 +2,27 @@
 # playbooks/vm_lifecycle.yml
 # Orchestrate VM lifecycle: setup → installed → provisioned → upgraded
 # Usage:
-#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=setup"
-#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=installed"
-#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=setup"
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=installed"
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=f43-kde lifecycle_action=provisioned"
 
 - name: VM Lifecycle Management (setup, installed, provisioned, upgraded)
   hosts: localhost
   vars_files:
     - "{{ playbook_dir }}/vars/vm_images.yml"
+    - "{{ playbook_dir }}/vars/vm_images.d/f43-kde.yml"
+    - "{{ playbook_dir }}/vars/vm_images.d/f43-kinos.yml"
+    - "{{ playbook_dir }}/vars/vm_images.d/f43-workstation.yml"
   vars:
     lifecycle_action: "{{ lifecycle_action | default('setup') }}"
-    vm_name: "{{ vm_name | default('fedora43-kde') }}"
+    vm_name: "{{ vm_name | default('f43-kde') }}"
+  pre_tasks:
+    - name: Aggregate per-VM image configs into unified vm_image_config
+      set_fact:
+        vm_image_config:
+          f43-kde: "{{ f43_kde_image_config }}"
+          f43-kinos: "{{ f43_kinos_image_config }}"
+          f43-workstation: "{{ f43_workstation_image_config }}"
   tasks:
     - name: Validate lifecycle action
       assert:

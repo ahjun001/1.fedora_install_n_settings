@@ -1,0 +1,16 @@
+---
+# vars/vm_images.d/f43-workstation.yml
+# Workflow manifest for f43-workstation VM
+
+f43_workstation_image_config:
+  base_image: f43-workstation-base.qcow2 # immutable golden image (GNOME Workstation)
+  current_stage: setup
+  image_pool: default
+  image_path: /var/lib/libvirt/images
+  artifacts:
+    - name: f43-workstation.setup-20251112.qcow2
+      stage: setup
+      backing_image: f43-workstation-base.qcow2
+      is_full_image: false
+      created: null
+      description: "Clean install, ready for provisioning"
