@@ -39,7 +39,7 @@
     - vim_install
     - nvim_install
     - bashrc_edit
-    - brave_install
+    # - brave_install
     - vscode_install
     - git_global_setup # requires become: false in the playing playbook
     - shellspec_install

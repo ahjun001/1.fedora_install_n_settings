@@ -1,0 +1,69 @@
+---
+# roles/vm_clone/tasks/main.yml
+# Handle thin clone creation, conversion to full images, and manifest updates
+
+- name: Create thin clone from backing image
+  ansible.builtin.shell: |
+    qemu-img create -f qcow2 \
+      -b "{{ clone_backing_image }}" \
+      "{{ clone_dest_path }}/{{ clone_name }}"
+  args:
+    executable: /bin/bash
+  register: thin_clone_result
+  when: clone_is_full is not defined or not clone_is_full
+
+- name: Register thin clone domain in libvirt
+  ansible.builtin.shell: |
+    virsh define /dev/stdin << EOF
+    <domain type='kvm'>
+      <name>{{ clone_domain_name }}</name>
+      <memory unit='MiB'>{{ clone_memory }}</memory>
+      <currentMemory unit='MiB'>{{ clone_memory }}</currentMemory>
+      <vcpu placement='static'>{{ clone_vcpus }}</vcpu>
+      <os>
+        <type arch='x86_64' machine='pc'>hvm</type>
+        <boot dev='hd'/>
+      </os>
+      <devices>
+        <emulator>/usr/bin/qemu-system-x86_64</emulator>
+        <disk type='file' device='disk'>
+          <driver name='qemu' type='qcow2'/>
+          <source file='{{ clone_dest_path }}/{{ clone_name }}'/>
+          <target dev='vda' bus='virtio'/>
+        </disk>
+        <interface type='network'>
+          <source network='default'/>
+          <model type='virtio'/>
+        </interface>
+        <console type='pty'>
+          <target type='virtio'/>
+        </console>
+        <graphics type='spice' listen='0.0.0.0'/>
+      </devices>
+    </domain>
+    EOF
+  when: thin_clone_result is changed
+
+- name: Convert thin clone to full independent image
+  ansible.builtin.shell: |
+    qemu-img convert -O qcow2 \
+      "{{ clone_dest_path }}/{{ clone_src_name }}" \
+      "{{ clone_dest_path }}/{{ clone_name }}"
+  args:
+    executable: /bin/bash
+  register: convert_result
+  when: clone_is_full is defined and clone_is_full
+
+- name: Update vm_images.yml manifest with new artifact
+  ansible.builtin.lineinfile:
+    path: "{{ playbook_dir }}/vars/vm_images.yml"
+    insertafter: "artifacts:"
+    line: |
+      - name: {{ clone_name }}
+        stage: {{ clone_stage }}
+        backing_image: {{ clone_backing_image | default('null') }}
+        is_full_image: {{ clone_is_full | default('false') | string | lower }}
+        created: {{ ansible_date_time.iso8601_basic_short }}
+        description: "{{ clone_description }}"
+  register: manifest_update
+  when: clone_track_artifact is not defined or clone_track_artifact

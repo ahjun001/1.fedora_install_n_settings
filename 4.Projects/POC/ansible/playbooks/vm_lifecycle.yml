@@ -1,0 +1,124 @@
+---
+# playbooks/vm_lifecycle.yml
+# Orchestrate VM lifecycle: setup → installed → provisioned → upgraded
+# Usage:
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=setup"
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=installed"
+#   ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+
+- name: VM Lifecycle Management (setup, installed, provisioned, upgraded)
+  hosts: localhost
+  vars_files:
+    - "{{ playbook_dir }}/vars/vm_images.yml"
+  vars:
+    lifecycle_action: "{{ lifecycle_action | default('setup') }}"
+    vm_name: "{{ vm_name | default('fedora43-kde') }}"
+  tasks:
+    - name: Validate lifecycle action
+      assert:
+        that:
+          - lifecycle_action in ['setup', 'installed', 'provisioned', 'upgraded']
+        fail_msg: "lifecycle_action must be one of: setup, installed, provisioned, upgraded"
+
+    - name: Load VM configuration
+      set_fact:
+        vm_config: "{{ vm_image_config[vm_name] }}"
+      register: vm_config_load
+
+    - name: Create setup stage (thin clone from base)
+      include_role:
+        name: vm_clone
+      vars:
+        clone_name: "{{ vm_name }}.setup-{{ ansible_date_time.date }}.qcow2"
+        clone_domain_name: "{{ vm_name }}.setup"
+        clone_backing_image: "{{ vm_config.image_path }}/{{ vm_config.base_image }}"
+        clone_dest_path: "{{ vm_config.image_path }}"
+        clone_memory: 2048
+        clone_vcpus: 2
+        clone_stage: setup
+        clone_is_full: false
+        clone_description: "Setup stage: OS install and base config (thin clone from base)"
+        clone_track_artifact: true
+      when: lifecycle_action == 'setup'
+
+    - name: Convert setup to installed stage (thin→full image)
+      block:
+        - name: Get latest setup artifact
+          set_fact:
+            latest_setup: "{{ vm_config.artifacts | selectattr('stage', 'equalto', 'setup') | list | first }}"
+
+        - name: Sysprep the domain before conversion
+          include_role:
+            name: vm_sysprep
+          vars:
+            sysprep_domain: "{{ vm_name }}.setup"
+            sysprep_image_path: "{{ vm_config.image_path }}/{{ latest_setup.name }}"
+
+        - name: Convert to full independent image
+          include_role:
+            name: vm_clone
+          vars:
+            clone_name: "{{ vm_name }}.installed-{{ ansible_date_time.date }}.qcow2"
+            clone_domain_name: "{{ vm_name }}.installed"
+            clone_src_name: "{{ latest_setup.name }}"
+            clone_dest_path: "{{ vm_config.image_path }}"
+            clone_memory: 2048
+            clone_vcpus: 2
+            clone_stage: installed
+            clone_is_full: true
+            clone_description: "Installed stage: OS ready, full independent image"
+            clone_track_artifact: true
+      when: lifecycle_action == 'installed'
+
+    - name: Create provisioned stage (thin clone from installed)
+      block:
+        - name: Get latest installed artifact
+          set_fact:
+            latest_installed: "{{ vm_config.artifacts | selectattr('stage', 'equalto', 'installed') | list | first }}"
+
+        - name: Create thin clone for provisioning
+          include_role:
+            name: vm_clone
+          vars:
+            clone_name: "{{ vm_name }}.provisioned-v1.qcow2"
+            clone_domain_name: "{{ vm_name }}.provisioned"
+            clone_backing_image: "{{ vm_config.image_path }}/{{ latest_installed.name }}"
+            clone_dest_path: "{{ vm_config.image_path }}"
+            clone_memory: 2048
+            clone_vcpus: 2
+            clone_stage: provisioned
+            clone_is_full: false
+            clone_description: "Provisioned stage: Application provisioning (thin clone from installed)"
+            clone_track_artifact: true
+      when: lifecycle_action == 'provisioned'
+
+    - name: Create upgraded stage (clone for OS upgrade test)
+      block:
+        - name: Get latest provisioned artifact
+          set_fact:
+            latest_provisioned: "{{ vm_config.artifacts | selectattr('stage', 'equalto', 'provisioned') | list | first }}"
+
+        - name: Create full independent clone for upgrade testing
+          include_role:
+            name: vm_clone
+          vars:
+            clone_name: "{{ vm_name }}.upgrade-test-{{ ansible_date_time.date }}.qcow2"
+            clone_domain_name: "{{ vm_name }}.upgrade-test"
+            clone_src_name: "{{ latest_provisioned.name }}"
+            clone_dest_path: "{{ vm_config.image_path }}"
+            clone_memory: 2048
+            clone_vcpus: 2
+            clone_stage: upgraded
+            clone_is_full: true
+            clone_description: "Upgraded stage: OS upgrade test (full independent image)"
+            clone_track_artifact: true
+      when: lifecycle_action == 'upgraded'
+
+    - name: Show current workflow stage
+      debug:
+        msg: |
+          VM {{ vm_name }} workflow stage: {{ lifecycle_action }}
+          Artifacts:
+          {% for artifact in vm_config.artifacts %}
+            - {{ artifact.name }} ({{ artifact.stage }}) [full={{ artifact.is_full_image }}]
+          {% endfor %}

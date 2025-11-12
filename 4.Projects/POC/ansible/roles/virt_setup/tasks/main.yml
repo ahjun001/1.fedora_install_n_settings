@@ -1,36 +1,3 @@
-# List all qcow2 files related to the VM's ISO
-- name: Find qcow2 files related to VM ISO
-  ansible.builtin.find:
-    paths: "{{ image_path }}"
-    patterns: "*.qcow2"
-    file_type: file
-  register: all_qcow2_files
-
-- name: Report qcow2 files matching VM name or ISO
-  ansible.builtin.shell: |
-    for f in {{ all_qcow2_files.files | map(attribute='path') | list | join(' ') }}; do
-      case "$f" in
-        *{{ item.name }}*|*{{ item.iso | regex_replace('\.[^.]+$', '') }}*)
-          stat -c '%n %U:%G %s %y' "$f" || true
-          ;;
-      esac
-    done
-  args:
-    executable: /bin/bash
-    warn: false
-  register: vm_disk_report
-  loop: "{{ vms_to_create }}"
-  loop_control:
-    label: "{{ item.name }}"
-
-- name: Show VM disk report
-  ansible.builtin.debug:
-    msg: |
-      Disk files for {{ item.item.name }} (matching VM name or ISO):
-      {{ item.stdout | default('No matching disk files found.') }}
-  loop: "{{ vm_disk_report.results }}"
-  loop_control:
-    label: "{{ item.item.name }}"
 ---
 # roles/virt_setup/tasks/main.yml
 - name: Create virtual machines from ISO images
@@ -72,57 +39,41 @@
   ignore_errors: true
   loop: "{{ vms_to_create }}"
 
-- name: Find all matching qcow2 files for each VM
+ # Note: we deliberately do not attempt to stop VMs here to keep the playbook
+ # simple and predictable. Use 'virsh shutdown <name>' or 'virsh destroy <name>'
+ # manually or via a separate maintenance play when you want to stop domains.
+
+# Find all qcow2 files in the image directory
+- name: Find all qcow2 files in image directory
   ansible.builtin.find:
     paths: "{{ image_path }}"
-    patterns: "{{ item.name }}*.qcow2"
+    patterns: "*.qcow2"
     file_type: file
-  register: disk_find
-  loop: "{{ vms_to_create }}"
-  loop_control:
-    label: "{{ item.name }}"
+  register: all_qcow2_files
+  changed_when: false
 
-- name: Check main qcow2 file was created
-  ansible.builtin.stat:
-    path: "{{ image_path }}/{{ item.name }}.qcow2"
-  register: disk_stat
-  loop: "{{ vms_to_create }}"
-  loop_control:
-    label: "{{ item.name }}"
-
-- name: Format modification times for existing disks
-  ansible.builtin.shell: "date -d @{{ item.stat.mtime }} '+%b %d %H:%M'"
+# Report qcow2 files matching each VM's name or ISO
+- name: Report qcow2 files for each VM
+  ansible.builtin.shell: |
+    echo "Disk files for {{ item.name }} (matching VM name or ISO):"
+    for f in {{ all_qcow2_files.files | map(attribute='path') | list | join(' ') }}; do
+      case "$f" in
+        *{{ item.name }}*|*{{ item.iso | regex_replace('\.[^.]+$', '') }}*)
+          stat -c '  %n %U:%G %s %y' "$f" 2>/dev/null || true
+          ;;
+      esac
+    done
   args:
-    warn: false
-  register: disk_mtime_each
-  loop: "{{ disk_stat.results }}"
+    executable: /bin/bash
+  register: vm_disk_report
+  loop: "{{ vms_to_create }}"
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: false
+
+- name: Show VM disk report
+  ansible.builtin.debug:
+    msg: "{{ item.stdout }}"
+  loop: "{{ vm_disk_report.results }}"
   loop_control:
     label: "{{ item.item.name }}"
-  when: item.stat.exists
-  failed_when: false
-
-- name: Build disk mtime map
-  ansible.builtin.set_fact:
-    disk_mtime_map: "{{ disk_mtime_map | default({}) | combine({ (item.item.item.name): (item.stdout | default('N/A')) }) }}"
-  loop: "{{ disk_mtime_each.results | default([]) }}"
-  loop_control:
-    label: "{{ item.item.item.name }}"
-
-
-
-- name: Report all matching disk files
-  ansible.builtin.debug:
-    msg: |
-      {{ vms_to_create[idx].name }}:
-        Main disk: {{ 'present' if disk_stat.results[idx].stat.exists else 'missing' }} (size={{ disk_stat.results[idx].stat.size|default('N/A') }}, owner={{ disk_stat.results[idx].stat.pw_name|default('N/A') }}:{{ disk_stat.results[idx].stat.gr_name|default('N/A') }}, modified={{ disk_mtime_map[vms_to_create[idx].name]|default('N/A') }})
-        Matching files:
-        {% for f in disk_find.results[idx].files %}
-          - {{ f.path }} (size={{ f.size }}, owner={{ f.pw_name }}:{{ f.gr_name }}, modified={{ f.mtime | to_datetime | strftime('%b %d %H:%M') }})
-        {% endfor %}
-        {% if disk_find.results[idx].files|length > 1 %}
-        WARNING: Multiple matching disk files found for {{ vms_to_create[idx].name }}. Please review and clean up unused files to avoid confusion.
-        {% endif %}
-  loop: "{{ vms_to_create }}"
-  loop_control:
-    label: "{{ item.name }}"
-    index_var: idx

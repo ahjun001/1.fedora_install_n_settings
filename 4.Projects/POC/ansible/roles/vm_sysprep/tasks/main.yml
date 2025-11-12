@@ -1,0 +1,52 @@
+---
+# roles/vm_sysprep/tasks/main.yml
+# Clear machine-specific state before cloning (SSH keys, hostnames, etc.)
+
+- name: Check if qemu-guest-agent is running
+  ansible.builtin.command: virsh qemu-agent-command "{{ sysprep_domain }}" '{"execute":"guest-ping"}'
+  register: guest_agent_check
+  failed_when: false
+  changed_when: false
+
+- name: Shutdown domain gracefully (via guest-agent)
+  ansible.builtin.command: virsh shutdown "{{ sysprep_domain }}"
+  when: guest_agent_check.rc == 0
+  register: shutdown_cmd
+  failed_when: false
+
+- name: Wait for domain to shut off (up to 30 seconds)
+  ansible.builtin.shell: |
+    for i in {1..30}; do
+      state=$(virsh domstate "{{ sysprep_domain }}" 2>/dev/null)
+      if [ "$state" = "shut off" ]; then
+        exit 0
+      fi
+      sleep 1
+    done
+    exit 1
+  register: wait_shutdown
+  failed_when: false
+
+- name: Force-stop domain if still running
+  ansible.builtin.command: virsh destroy "{{ sysprep_domain }}"
+  when: wait_shutdown.rc != 0
+  failed_when: false
+
+- name: Run virt-sysprep to clear machine-specific state
+  ansible.builtin.command: |
+    virt-sysprep -a "{{ sysprep_image_path }}" \
+      --enable=dhcp-client-state \
+      --enable=logfiles \
+      --enable=machine-id \
+      --enable=net-hwaddr \
+      --enable=ssh-hostkeys \
+      --enable=ssh-userdir \
+      --enable=tmp-files \
+      --enable=customize
+  register: sysprep_result
+  changed_when: sysprep_result.rc == 0
+
+- name: Report sysprep completion
+  ansible.builtin.debug:
+    msg: "Sysprepped {{ sysprep_domain }} ({{ sysprep_image_path }})"
+  when: sysprep_result.rc == 0

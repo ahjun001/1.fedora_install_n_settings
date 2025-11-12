@@ -4,7 +4,11 @@
 - name: Install virt-manager
   become: true
   ansible.builtin.package:
-    name: "@virtualization"
+    name:
+      - "@virtualization"
+      - bridge-utils # required to build a bridged network
+      - libvirt-daemon-config-network # required to build a bridged network
+      - guestfs-tools  # provide command 'virt-syspre^p
     state: latest
 
 - name: Add user to libvirt group

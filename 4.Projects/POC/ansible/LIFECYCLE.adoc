@@ -1,0 +1,230 @@
+= VM Lifecycle & Cloning Workflow
+:toc: auto
+:toc-title: Table of Contents
+:toclevels: 3
+:source-highlighter: highlight.js
+
+== Overview
+
+This directory contains Ansible playbooks and helper scripts to automate VM cloning, conversion, and lifecycle management through multiple workflow stages.
+
+The workflow automates the transition from one stage to the next while maintaining clear artifact naming and manifest tracking:
+
+. *setup* → clean OS install, thin clone from base image
+. *installed* → convert thin clone to independent full image
+. *provisioned* → provision applications, thin clone from installed
+. *upgraded* → test OS upgrade, convert to full image
+
+All artifacts are tracked in link:vars/vm_images.yml[] so you always know which stage you're at and which image to work with.
+
+== Files
+
+* link:playbooks/vm_lifecycle.yml[] — Orchestrates lifecycle transitions (setup → installed → provisioned → upgraded)
+* link:roles/vm_clone/tasks/main.yml[] — Creates thin clones, converts to full images, updates manifest
+* link:roles/vm_sysprep/tasks/main.yml[] — Clears machine-specific state before cloning
+* link:scripts/vm_clone_helper.sh[] — Quick manual clone/convert/sysprep operations
+* link:vars/vm_images.yml[] — Central manifest tracking all artifacts and current stage
+
+== Quick Start
+
+=== 1. Create initial base image (one-time)
+
+Build a clean Fedora 43 VM by hand or automation, then place it at:
+
+[source,bash]
+----
+/var/lib/libvirt/images/fedora43-base.qcow2
+----
+
+=== 2. Run the setup stage (thin clone from base)
+
+[source,bash]
+----
+ansible-playbook playbooks/vm_lifecycle.yml \
+  -e "vm_name=fedora43-kde lifecycle_action=setup"
+----
+
+This creates:
+
+* `fedora43-kde.setup-YYYY-MM-DD.qcow2` (thin clone)
+* Domain `fedora43-kde.setup` (defined in libvirt)
+* Manifest entry in link:vars/vm_images.yml[]
+
+Boot the VM and install/configure the OS. When done, proceed to installed stage.
+
+=== 3. Convert to installed stage (thin → full)
+
+[source,bash]
+----
+ansible-playbook playbooks/vm_lifecycle.yml \
+  -e "vm_name=fedora43-kde lifecycle_action=installed"
+----
+
+This:
+
+* Sysprepped the setup domain (clears SSH keys, machine-id, etc.)
+* Converts the thin clone to a full independent image
+* Updates manifest
+
+=== 4. Run the provisioned stage (thin clone for provisioning)
+
+[source,bash]
+----
+ansible-playbook playbooks/vm_lifecycle.yml \
+  -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+----
+
+This creates:
+
+* `fedora43-kde.provisioned-v1.qcow2` (thin clone, backed by installed)
+* Domain `fedora43-kde.provisioned`
+* Manifest entry
+
+Boot the VM, run provisioning playbooks. When done, you can test the upgrade or convert to full.
+
+=== 5. Run the upgraded stage (for OS upgrade testing)
+
+[source,bash]
+----
+ansible-playbook playbooks/vm_lifecycle.yml \
+  -e "vm_name=fedora43-kde lifecycle_action=upgraded"
+----
+
+This creates:
+
+* `fedora43-kde.upgrade-test-YYYY-MM-DD.qcow2` (full independent image)
+* Domain `fedora43-kde.upgrade-test`
+
+Boot and test OS upgrades. If successful, you can rename the artifact to `fedora42-to-43.kde.upgraded-20251113.qcow2` to preserve lineage.
+
+== Manual Quick Operations
+
+Use the link:scripts/vm_clone_helper.sh[] script for quick manual clone/convert without running the full playbook:
+
+=== Thin clone (fast, small):
+
+[source,bash]
+----
+./scripts/vm_clone_helper.sh thin-clone fedora43-base.qcow2 fedora43-kde.setup-20251112.qcow2
+----
+
+=== Convert thin to full (independent image):
+
+[source,bash]
+----
+./scripts/vm_clone_helper.sh convert-full fedora43-kde.setup-20251112.qcow2 fedora43-kde.installed-20251112.qcow2
+----
+
+=== Sysprep domain before clone (clear machine-specific state):
+
+[source,bash]
+----
+./scripts/vm_clone_helper.sh sysprep fedora43-kde /var/lib/libvirt/images/fedora43-kde.qcow2
+----
+
+== Manifest Structure
+
+The manifest (link:vars/vm_images.yml[]) tracks all artifacts and current workflow stage:
+
+[source,yaml]
+----
+vm_image_config:
+  fedora43-kde:
+    base_image: fedora43-base.qcow2
+    current_stage: setup  # or: installed, provisioned, upgraded
+    artifacts:
+      - name: fedora43-kde.setup-20251112.qcow2
+        stage: setup
+        backing_image: fedora43-base.qcow2
+        is_full_image: false
+        created: 2025-11-12T...Z
+        description: "..."
+----
+
+After each playbook run, the manifest is automatically updated with the new artifact.
+
+== Naming Conventions
+
+* *Stage token*: `setup`, `installed`, `provisioned`, `upgraded`
+* *Format*: `<vm-name>.<stage>-<YYYYMMDD>[-rev].qcow2`
+* *Examples*:
+** `fedora43-kde.setup-20251112.qcow2`
+** `fedora43-kde.installed-20251112.qcow2`
+** `fedora43-kde.provisioned-v1.qcow2`
+** `fedora43-kde.upgrade-test-20251113.qcow2` (for testing)
+** `fedora42-to-43.kde.upgraded-20251113.qcow2` (for preserve lineage: upgraded from 42)
+
+== Key Concepts
+
+*Thin clone (backing file)*::
+Small qcow2 file that references a backing image. Fast and space-efficient for dev/test. Do not keep long chains.
+
+*Full image (independent)*::
+Self-contained qcow2 with no backing file. Slower to create but stable for long-term artifacts.
+
+*Sysprep*::
+Clears machine-specific state (SSH keys, machine-id, hostname, etc.) so clones are truly generic. Required before cloning a template.
+
+*virt-sysprep*::
+Tool that customizes/clears image state offline (domain must be shut off).
+
+== Workflow Tips
+
+. *Always sysprep before making a canonical artifact.* This ensures clones won't have duplicate SSH keys or machine-ids.
+. *Convert thin clones to full images after they become artifacts.* Thin clones are great for fast iteration, but long backing-file chains break easily.
+. *Check the manifest often.* It tells you which stage you're at and which image to work with.
+. *Keep the base image immutable.* Never boot or modify it; always clone from it.
+. *For OS upgrades, explicitly name the artifact to show origin.* Use `fedora42-to-43.kde.upgraded-20251113.qcow2` so it's clear this was upgraded from 42, not freshly installed.
+
+== Troubleshooting
+
+=== Domain won't shut down gracefully
+
+* Ensure `qemu-guest-agent` is installed on the guest OS.
+* Fallback to `virsh destroy <domain>` (force stop).
+
+=== Thin clone chain becomes too deep
+
+* Run `qemu-img convert` to consolidate and create a new independent image.
+* Delete old thin clones after conversion.
+
+=== Manifest out of sync
+
+* Manually edit link:vars/vm_images.yml[] to add missing entries.
+* Re-run the playbook with `--check` to see what would happen.
+
+=== virt-sysprep fails
+
+* Check if the guest tools/cloud-init are properly installed.
+* Try running it with `-v` (verbose) flag.
+
+== Example End-to-End Session
+
+[source,bash]
+----
+# 1. Setup stage
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=setup"
+# Boot VM, install OS, validate. When done:
+
+# 2. Installed stage
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=installed"
+# Syspreps and converts to full image. Check manifest for artifact name.
+
+# 3. Provisioned stage
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=provisioned"
+# Boot VM, run provisioning playbooks. When done:
+
+# 4. Upgraded stage (optional)
+ansible-playbook playbooks/vm_lifecycle.yml -e "vm_name=fedora43-kde lifecycle_action=upgraded"
+# Boot VM, test OS upgrade. If successful, optionally rename artifact to show lineage.
+
+# Always check the manifest:
+cat vars/vm_images.yml
+----
+
+== See Also
+
+* link:playbooks/vm_setup.yml[] — Creates initial VMs from ISO
+* link:roles/virt_setup/[] — VM creation role
+* link:roles/vm_clone/[] — Cloning and conversion role
+* link:roles/vm_sysprep/[] — Machine-specific state cleanup role
