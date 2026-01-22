@@ -1,0 +1,13 @@
+---
+# ./roles/figlet_install/tasks/main.yml
+#  playbooks/roles/figlet_install/tasks/main.yml
+# task file for figlet_install
+# run with: ansible-playbook -i inventories/hosts.yml --limit workstation -e figlet_state=present playbooks/figlet.yml --ask-vault-pass -K
+
+- name: dnf install multiple packages
+  become: true # now required since the playbook set it to false
+  ansible.builtin.package:
+    name:
+      - figlet
+
+    state: "{{ figlet_state }}" # present / absent

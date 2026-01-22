@@ -1,0 +1,35 @@
+---
+# playbook.yml
+# run with:  ansible-playbook -i inventories/hosts.yml --limit workstation playbooks/figlet.yml --ask-vault-pass -K
+# the local ansible.cfg file should contain the following lines
+# [defaults]
+# vault_password_file   = /tmp/.vault_pass.txt
+
+# $ ansible-playbook -i hosts playbook.yml --ask-vault-pass -K
+
+- hosts: all
+  remote_user: "{{ ansible_user }}"
+  become_method: sudo
+  become: false # the only way for git_global_setup to work in regular user instead of root
+
+  vars:
+    vm_domain: "fedora41-cinnamon" # replace with your VM's domain name
+    var_file_paths:
+      - name: ansible_vault
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/ansible_vault.yml"
+      - name: gh_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/gh_mimi.yml"
+      - name: trello_mimi
+        paths:
+          - "/home/{{ansible_user}}/Documents/IHD_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"
+          - "/run/media/{{ansible_user}}/USB_mimi/CRUD_mimi_in_the_cloud/trello_mimi.yml"
+
+  roles:
+    # some roles, not used here, are stored in roles_store
+    - key_vault_pwd_setup
+
+    - figlet_install

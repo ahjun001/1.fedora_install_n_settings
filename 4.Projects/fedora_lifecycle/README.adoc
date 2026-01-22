@@ -1,0 +1,461 @@
+= Howto manage Fedora-lifecycle README
+Adopting a new version every 6 months
+// writing comments after settings is not caught by the linter, but it does not work either ... // don't do it
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+//:repoducible:
+// :source-highlighter to render code with colours
+:source-highlighter: highlight.js
+//:listing-caption: Listing
+//:pdf-page-size: A4
+//:docinfo: private-head
+//:idprefix:
+//:idseparator: -
+//:sectanchors:
+//:sectlinks:
+//:quick-uri: http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+:toc:   // gets a ToC after the title
+:toc-title: Contents
+:toclevels: 3
+:sectnums: // gets ToC sections to be numbered
+:sectnumlevels: 6
+//:icons: font	// gets admonition paragraphs to use Font Awesome
+
+:github-flavored:  // enables GitHub-specific features like tables, task lists, and fenced code blocks
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+// Naughty Waco Temps
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+endif::[]
+:toc: // gets a ToC after the title
+:toclevels: 2
+// :sectnums: // gets ToC sections to be numbered
+:sectnumlevels: 3 // max # of numbering levels
+
+== Brainstorming ideas, not in todos yet
+
+. set_VM 10-15mn
+
+== Project status, progress monitoring and todos
+This describes state of OS and provisionned packages on workstation and VMs.
+Status report is automatized with bash script tests as much as can be. Then human validation takes over.
+
+Dec. 2025, worstation runs f42-kde.
+
+Planning to switch to f43-kinoite, with steps as follows
+
+. Check that workflow is documented and runs on VM f42-kde
+. Then run & test on VM f43-kde
+. Run & test on f43-kinoite
+
+=== TODO
+ After VM is updated, run:
+
+[source,bash]
+----
+$ pgrep -af spice-vdagent
+ if none, then
+$ systemctl enable --no spcie-vdagentd
+
+$ rpm-ostree install xclip  # for clipboard copy back & forth
+----
+
+=== PoC
+
+==== Figlet
+Establish feasability of installing a minimum package on each VM.
+
+===== Defined Objectives and Success Criteria:
+With same playbook & script:
+toggle figlet install and remove with dnf on worstation
+toggle figlet install and remove with dnf on f4*-VM
+toggle figlet install and remove with os-tree on f4*-VM
+
+===== Core Functionality Implementation:
+- use ssh to install into VMs with dnf
+- use ssh to install into VMs with ostree
+
+==== Template
+A well-structured PoC typically includes several critical components:
+
+===== Defined Objectives and Success Criteria:
+Clear goals must be established at the outset—what specific functionality is being tested, and how will success be measured? This ensures the PoC remains focused and evaluable.
+
+===== Core Functionality Implementation:
+The PoC should demonstrate the most critical technical aspects of the idea, such as integration with third-party APIs, performance under load, or the use of a novel algorithm.
+
+===== Technical Documentation:
+This includes code comments, architecture diagrams, and notes on decisions made during development. It supports knowledge transfer and future development.
+Testing and Evaluation: Functional, performance, and usability tests are conducted to verify that the PoC meets its objectives. Feedback from stakeholders and potential users may also be collected.
+
+===== Final Report or Presentation:
+A summary of findings, including whether the concept was proven feasible, any limitations encountered, and recommendations for next steps (e.g., proceed to MVP, revise approach, or abandon the idea).
+
+
+== HOWTO
+This comprehensive howto Asciidoc guide describe Fedora distrisbution lifecycle management, including: VM deployment, OS installation, and provisioning with Ansible and Bash. 
+
+=== Introduction and Scope
+Define the purpose, target audience, and scope of the guide — covering lifecycle phases, automation tools, and infrastructure setup.
+
+==== Purpose
+Fedora Workstation releases a new version approximately every six months, typically in April and October.
+
+Each being an opportunity to re-install a fresh system on the workstation and test new spins on VMs in their vanilla version.
+
+Fresh install systems should be tested for necessary functionalities before any further provisionning. These functionalities include :
+
+* 2 input methods : English (US, int’l with dead keys) and Pinyin. Namely fcitx for KDE and IBus on Gnome.
+
+* 2 input methods working with OS native packages as well as other necessary but not as well integrated packages : WeChat, wine/Wenlin.
+
+* similarly middle-click and clipboard copy & paste on WeChat and wine/Wenlin.
+
+For OS installs that passed these tests, further provisionning should be done, as follows :
+
+* one core for both workstation and VMs.
+
+* one solely for workstation, which contains the virtualisation packages that VMs don’t need.
+
+==== Lifecycle stages 
+Each VM, characterized by their Fedora spin & version, will have 5
+stages, as follows :
+
+* 1. VM is defined: xml and qcow2 files are created but not opened yet
+* 2. OS is installed and updated
+* 3. Necessary provisionning is installed and tested
+* 4.a Core provisionning is installed and tested
+* 4.b Workstation supplement provisionning is installed and tested
+* 6. OS has been upgraded to a new Fedora version (ex. 42 upgraded to
+43)
+
+Implementing a new stage should be preceded with creating the latest
+upgraded version of the previous stage as an artifact that will be the
+base for re-work if needed.
+
+Artifacts’ names will tell what they contain, as follows :
+
+* f<version>-<spin>_VM-set.qcow2
+* f<version>-<spin>_installing-OS-WIP.qcow2
+* f<version>-<spin>_OS-installed.qcow2
+* f<version>-<spin>_provisionning-Core-WIP.qcow2
+* f<version>-<spin>_Core-provisionned.qcow2
+* f<version>-<spin>_provisionning-Host-sup-WIP.qcow2
+* f<version>-<spin>_Host-sup-provisionned.qcow2 # this one mostly for testing that install process works, not to be used
+* f<version>-<spin>_OS-upgraded.qcow2
+
+All tools necessary to reach the later stages are in this repository in
+the form of bash scripts, ansible playbooks, and manual validation
+descriptions.
+
+These tools, tested on VMs, are meant to be usable to provision the
+host. They are organized in a directory tree as follows :
+
+
+==== Target audience
+Target audience is system admin. This HOWTO is shared on github.com, comments and suggestions are welcome.
+
+=== System and Environment Overview
+This part should describe hardware, software, and network requirements. Including inventory details (servers, VMs, OS versions) and communication architecture.
+
+==== Status report
+
+.Listing all iso images on host hard disk
+[source,bash]
+----
+$ sudo find /var/lib/libvirt/images/ -type f -name "*.iso" -printf "%TY-%Tm-%Td %TH:%TM\t%P\n"   | sort
+----
+
+.Listing files in /var/lib/libvirt/images that don't belong 
+[source,bash]
+----
+$ sudo find /var/lib/libvirt/images -type f ! \( -name "*.raw" -o -name "*.qcow" -o -name "*.qcow2" -o -name "*.dmg" -o -name "*.vmdk" -o -name "*.vpc" -o -name "*.iso" \) -printf "%TY-%Tm-%Td %TH:%TM\t%P\n" | sort
+----
+
+.Listing  .qcow2 that have not been defined
+[source,bash]
+----
+$ ./list_undefined_qcow2.sh
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+.Listing 
+[source,bash]
+----
+$ ls
+----
+
+
+
+=== Linux Distribution Lifecycle Management
+Cover planning for OS support timelines (e.g., Ubuntu LTS), version upgrades, patching strategies, and end-of-life procedures to ensure security and stability.
+
+=== Virtual Machine Deployment
+Detail steps to create and configure VMs using tools like VMware, KVM, or VirtualBox. Include templates, resource allocation, and OVF deployment.
+
+=== Operating System Installation Automation
+Explain automated OS installation via PXE, Kickstart, or cloud-init, ensuring consistent and repeatable setups across physical and virtual machines.
+
+=== Configuration Management with Ansible
+Outline playbook structure, inventory setup, roles, and tasks for system configuration. Show examples for package management, service setup, and user provisioning.￼
+
+=== Bash Scripting for Automation
+Provide reusable scripts for routine tasks like backups, monitoring, log rotation, and system checks, emphasizing error handling and logging.
+
+=== Provisioning Workflow Integration
+Demonstrate how Ansible and Bash scripts work together in a full provisioning pipeline—from VM creation to final configuration.
+
+=== Maintenance and Monitoring
+Include procedures for updates, audits, performance monitoring, backup strategies, and security hardening.
+
+===. Troubleshooting and Recovery
+List common issues (e.g., failed provisioning, boot errors) and recovery steps, including rollback procedures and log analysis.
+
+== This file Snippets
+
+
+[source,bash]
+----
+$ echo "Hello, World!"
+$ ls -la
+----
+
+=== Convert .odt into .adoc
+
+[bash]
+----
+$ pandoc input.odt -o output.adoc
+----
+
+=== VSCode
+
+==== Test
+If plugin shell-format v7.2.8 does not work
+
+. Download https://unpkg.com/@one-ini/wasm@0.1.1/one_ini_bg.wasm or copy from safe
+. place in ~/.vscode/extensions/foxundermoon.shell-format-7.2.8/dist/one_ini_bg.wasm   
+. restart VSCode
+
+== README Snippets
+
+*Normal paragraphs* are defined by one or more consecutive lines of text.
+Line breaks within a paragraph are not displayed.
+
+Leave at least one empty line to begin a new paragraph.
+
+Normal Paragraphs are defined by one or more consecutive lines of text, starting on column 1. +
+
+. No special markup required.
+. Line breaks *within* a paragraph are not displayed.
+. Begin a new paragraph by leaving at least one empty line.
+. Leave at least one empty line to begin a new paragraph.
+. Used for regular content presentation.
+
+*Literal Paragraphs*:
+
+- Consist of one or more consecutive lines indented by at least one space.
+- Displayed as preformatted text.
+- Text appears in a fixed-width (typically monospace) font.
+- The lines are preformatted (i.e., as formatted in the source).
+- Spaces and newlines are preserved.
+- Ideal for displaying code snippets, command examples, or other content where formatting matters.
+- Literal paragraphs are great for maintaining the exact formatting of your content, while normal paragraphs are more flexible for regular text presentation
+
+  Example of a Literal paragraphs: 
+ . Spaces    and newlines,
+ like the ones in this sentence, are preserved.
+ - Other formatting *bold* _italics_ `MonoSpace & Red` won't work
+
+ Unconstrained -- that is non-whole word in the sense of adoc separators -- formating :  bold, italic, and monospace
+
+. This is **B**old
+. These are __Ita__lics
+. Those ... are `... monospaced & Red`
+
+ Unordered lists
+ * Level 1 list item 1
+ ** Level 2 list item 1
+ ** Level 2 list item 2
+ * Level 1 list item 2
+
+Rendered:
+
+* Level 1 list item 1
+** Level 2 list item 1
+** Level 2 list item 2
+* Level 1 list item 2
+
+ Ordered List
+ . Step 1
+ . Step 2
+ .. Step 2a
+ .. Step 2b
+ . Step 3
+
+Rendered:
+
+. Step 1
+. Step 2
+.. Step 2a
+.. Step 2b
+. Step 3
+
+Key types of separators in AsciiDoc
+
+ (i) Section Headers
+ Marked with = signs:
+ = Chapter (level 0, book only)
+ == Section (level 1), etc.
+ 
+ (ii) Delimited Blocks
+ Enclosed by matching lines of special characters:
+
+- Listing or Source block
+ ----
+ $ find / -type f -name "*.adoc" -exec ls -l {} \;
+ ----
+
+Listing or Source block using ----
+---- 
+ $ find / -type f -name "*.adoc" -exec ls -l {} \;
+----
+
+
+- Source block using [source, bash]
+
+[source, bash]
+----
+$ find / -type f -name "*.adoc" -exec ls -l {} \; 
+----
+
+→ Literal block with .... 
+
+.... 
+Some literal block(verbatim)
+....
+
+→ Quote or Verse with ____ 
+
+____ 
+some Quote or Verse
+____ 
+
+→ Sidebar
+
+****
+Some sidebar text
+
+****
+ 
+[sidebar]
+Sidebars are used to visually separate auxiliary bits of content
+that supplement the main text.
+ 
+:icons: font
+
+.Optional Title
+****
+Sidebars are used to visually separate auxiliary bits of content
+that supplement the main text.
+
+CAUTION: They can contain any type of content.
+
+.Source code block in a sidebar
+[source,js]
+----
+const { expect, expectCalledWith, heredoc } = require('../test/test-utils')
+----
+
+==== → Example or Admonition
+
+ Example 1
+
+====
+
+
+==== → Example or Admonition
+
+ Example 1
+
+====
+****
+
+ //// → Comment (not rendered)
+////
+ → Comment (not rendered)
+////
+
+
+ |=== → Table
+ These delimiters must be linewise and congruent (same start/end).
+
+[cols="3h,2m,s,e"]
+|===
+|Column 1 |Column 2 |Column 3 |Column 4
+
+|This column's content and borders are rendered using the table header (`h`) styles.
+|This column's content is rendered using a monospace font (m).
+|This column's content is bold (`s`).
+|This column's content is italicized (`e`).
+
+|This column's content and borders are rendered using the table header (`h`) styles.
+|This column's content is rendered using a monospace font (m).
+|This column's content is bold (`s`).
+|This column's content is italicized (`e`).
+|===
+
+ (iiI) Block Metadata Separators
+ [#id] → Block anchor
+ [source,java] → Block attributes
+ . → Block title prefix (e.g., .Title)
+ 
+  (iv) Table Cell Separator
+ | → Separates cells in a table row
+ 
+  (v) ID and Word Separators (Attributes)
+ :idprefix: and :idseparator: → Control auto-generated section IDs (e.g., _section_title)
+
+Ref.: https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/
+
+

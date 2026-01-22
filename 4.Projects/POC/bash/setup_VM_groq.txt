@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+# ------------------------------------------------------------
+#  Create a VM that is byte‑for‑byte identical to f42‑kde‑manual
+# ------------------------------------------------------------
+
+virt-install \
+  --name f42-kde-manual \
+  --uuid dbfd178e-4065-4776-9a22-cb4358afc7a7 \
+  \
+  # ---- Memory & CPUs ------------------------------------------------
+  --memory 8192 \                     # 8 GiB (MiB) – the XML used 8388608 KiB
+  --memorymax 8192 \                  # hard limit (same as current)
+  --vcpus 12,placement=static \       # 12 vCPUs, static placement
+  \
+  # ---- CPU model ----------------------------------------------------
+  --cpu host-passthrough,check=none,migratable=on \
+  \
+  # ---- Clock --------------------------------------------------------
+  --clock offset=utc \
+  --timer name=rtc,tickpolicy=catchup \
+  --timer name=pit,tickpolicy=delay \
+  --timer name=hpet,present=no \
+  \
+  # ---- Firmware (UEFI/OVMF) -----------------------------------------
+  --boot \
+    loader=/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2, \
+    loader.type=pflash,loader.readonly=yes,loader.secure=yes, \
+    nvram=/var/lib/libvirt/qemu/nvram/f42-kde-manual_VARS.qcow2, \
+    nvram.format=qcow2,nvram.template=/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2 \
+  \
+  # ---- Domain features ------------------------------------------------
+  --features acpi=on,apic=on,vmport=off,smm=on \
+  \
+  # ---- Emulator (optional – defaults to qemu-system-x86_64) ---------
+  --emulator /usr/bin/qemu-system-x86_64 \
+  \
+  # ---- Primary disk (virtio) -----------------------------------------
+  --disk path=/var/lib/libvirt/images/f42-kde-manual.qcow2, \
+    format=qcow2,bus=virtio,discard=unmap,device=disk, \
+    address=pci:0000:04:00.0 \
+  \
+  # ---- CD‑ROM (SATA) -------------------------------------------------
+  --disk path=/path/to/your/iso.iso,device=cdrom,bus=sata,readonly=yes, \
+    address=drive:controller=0,bus=0,target=0,unit=0 \
+  \
+  # ---- PCI controllers ------------------------------------------------
+  --controller type=usb,model=qemu-xhci,ports=15,index=0, \
+    address=pci:0000:02:00.0 \
+  \
+  --controller type=pci,model=pcie-root,index=0 \
+  \
+  --controller type=pci,model=pcie-root-port,index=1, \
+    target.chassis=1,target.port=0x10, \
+    address=pci:0000:00:02.0,multifunction=on \
+  \
+  --controller type=pci,model=pcie-root-port,index=2, \
+    target.chassis=2,target.port=0x11, \
+    address=pci:0000:00:02.1 \
+  \
+  --controller type=pci,model=pcie-root-port,index=3, \
+    target.chassis=3,target.port=0x12, \
+    address=pci:0000:00:02.2 \
+  \
+  --controller type=pci,model=pcie-root-port,index=4, \
+    target.chassis=4,target.port=0x13, \
+    address=pci:0000:00:02.3 \
+  \
+  --controller type=pci,model=pcie-root-port,index=5, \
+    target.chassis=5,target.port=0x14, \
+    address=pci:0000:00:02.4 \
+  \
+  --controller type=pci,model=pcie-root-port,index=6, \
+    target.chassis=6,target.port=0x15, \
+    address=pci:0000:00:02.5 \
+  \
+  --controller type=pci,model=pcie-root-port,index=7, \
+    target.chassis=7,target.port=0x16, \
+    address=pci:0000:00:02.6 \
+  \
+  --controller type=pci,model=pcie-root-port,index=8, \
+    target.chassis=8,target.port=0x17, \
+    address=pci:0000:00:02.7 \
+  \
+  --controller type=pci,model=pcie-root-port,index=9, \
+    target.chassis=9,target.port=0x18, \
+    address=pci:0000:00:03.0,multifunction=on \
+  \
+  --controller type=pci,model=pcie-root-port,index=10, \
+    target.chassis=10,target.port=0x19, \
+    address=pci:0000:00:03.1 \
+  \
+  --controller type=pci,model=pcie-root-port,index=11, \
+    target.chassis=11,target.port=0x1a, \
+    address=pci:0000:00:03.2 \
+  \
+  --controller type=pci,model=pcie-root-port,index=12, \
+    target.chassis=12,target.port=0x1b, \
+    address=pci:0000:00:03.3 \
+  \
+  --controller type=pci,model=pcie-root-port,index=13, \
+    target.chassis=13,target.port=0x1c, \
+    address=pci:0000:00:03.4 \
+  \
+  --controller type=pci,model=pcie-root-port,index=14, \
+    target.chassis=14,target.port=0x1d, \
+    address=pci:0000:00:03.5 \
+  \
+  --controller type=sata,index=0, \
+    address=pci:0000:00:1f.2 \
+  \
+  --controller type=virtio-serial,index=0, \
+    address=pci:0000:03:00.0 \
+  \
+  # ---- Network interface ---------------------------------------------
+  --network bridge=virbr0,model=virtio,mac=52:54:00:05:4f:06, \
+    address=pci:0000:01:00.0 \
+  \
+  # ---- Serial & console (PTY) ---------------------------------------
+  --serial pty \
+  --console pty \
+  \
+  # ---- Channels ------------------------------------------------------
+  --channel unix,target_type=virtio,target_name=org.qemu.guest_agent.0, \
+    address=virtio-serial:controller=0,bus=0,port=1 \
+  \
+  --channel spicevmc,target_type=virtio,target_name=com.redhat.spice.0, \
+    address=virtio-serial:controller=0,bus=0,port=2 \
+  \
+  # ---- Input devices -------------------------------------------------
+  --input tablet,bus=usb,address=usb:0:1 \
+  --input mouse,bus=ps2 \
+  --input keyboard,bus=ps2 \
+  \
+  # ---- Graphics (Spice) ---------------------------------------------
+  --graphics spice,autoport=yes,listen=address,compression=off \
+  \
+  # ---- Sound ---------------------------------------------------------
+  --sound model=ich9,address=pci:0000:00:1b.0 \
+  --audio id=1,type=spice \
+  \
+  # ---- Video ---------------------------------------------------------
+  --video virtio,heads=1,primary=yes,address=pci:0000:00:01.0 \
+  \
+  # ---- USB redirection devices ---------------------------------------
+  --redirdev type=spicevmc,bus=usb,port=2 \
+  --redirdev type=spicevmc,bus=usb,port=3 \
+  \
+  # ---- Watchdog ------------------------------------------------------
+  --watchdog model=itco,action=reset \
+  \
+  # ---- Memory balloon ------------------------------------------------
+  --memballoon model=virtio,address=pci:0000:05:00.0 \
+  \
+  # ---- RNG -----------------------------------------------------------
+  --rng model=virtio,backend=/dev/urandom,address=pci:0000:06:00.0 \
+  \
+  # ---- Power management actions (defaults match the XML) ----------
+  --on-poweroff destroy \
+  --on-reboot restart \
+  --on-crash destroy \
+  \
+  # ---- No automatic console connection (we already added PTY) -----
+  --noautoconsole \
+  \
+  # ---- Final flags ---------------------------------------------------
+  --import   # tells libvirt the disk image already exists

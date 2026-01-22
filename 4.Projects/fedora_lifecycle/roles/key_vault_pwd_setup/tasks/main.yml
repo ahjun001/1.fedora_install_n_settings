@@ -1,0 +1,20 @@
+---
+# roles/key_vault_pwd_setup/tasks/main.yml
+- name: Build candidate vault file list
+  set_fact:
+    _candidate_vault_files: "{{ _candidate_vault_files | default([]) + item.paths }}"
+  loop: "{{ var_file_paths }}"
+  run_once: true
+
+- name: Include first found vault file
+  ansible.builtin.include_vars:
+    file: "{{ lookup('first_found', {'files': _candidate_vault_files, 'skip': false}) }}"
+  changed_when: false
+  run_once: true
+
+- name: Create Vault password file on local machine
+  copy:
+    content: "{{ vault_password }}"
+    dest: "/tmp/.vault_pass.txt"
+    mode: "0600"
+  become: false
