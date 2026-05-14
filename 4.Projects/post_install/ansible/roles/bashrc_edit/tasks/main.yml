@@ -25,7 +25,7 @@
         -path "/.snapshots" -o -path "/home/.snapshots" -o -path "/run" \
         -prune -o '
       alias clear_GPUCache='find ~/.config -type d -name GPUCache -exec rm -r {} \;'
-      alias pj_update_fedora='sudo dnf5 upgrade --refresh -y && sudo dnf5 autoremove -y && sudo dnf5 clean all'
+      alias pj_update_fedora='sudo dnf5 upgrade --refresh -y && sudo dnf5 autoremove -y && sudo dnf5 clean all;sudo dnf4 upgrade brave-browser'
 
       export VISUAL=nvim
       export EDITOR=nvim
