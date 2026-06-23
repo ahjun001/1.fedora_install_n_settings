@@ -1,0 +1,7 @@
+# //hosts
+[local]
+localhost ansible_connection=local
+
+[all:vars]
+ansible_user=perubu
+ansible_ssh_private_key_file=/home/perubu/.ssh/id_ed25519

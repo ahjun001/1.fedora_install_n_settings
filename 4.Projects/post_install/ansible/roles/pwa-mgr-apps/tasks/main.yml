@@ -1,0 +1,74 @@
+---
+# ./roles/pwa-mgr-apps/tasks/main.yml
+# task file for pwa-mgr-apps
+---
+# tasks file for pwa-mgr-apps
+
+# Task 1: Install git (if not already installed)
+- name: Ensure git is installed
+  become: true
+  ansible.builtin.dnf:
+    name: git
+    state: present
+
+# Task 2: Clone the pwa-manager repository
+- name: Clone pwa-manager repository
+  ansible.builtin.git:
+    repo: https://github.com/mrjengo/pwa-manager.git
+    dest: /tmp/pwa-manager
+    force: true
+
+# Task 3: Install pwa-manager system-wide
+- name: Install pwa-manager
+  become: true
+  ansible.builtin.shell:
+    cmd: |
+      cd /tmp/pwa-manager
+      chmod +x install.sh
+      ./install.sh
+    creates: /opt/pwa  # idempotency check
+
+# Task 4: Install webapps using pwa-manager
+- name: Install webapps with pwa-manager
+  vars:
+    webapps:
+      - name: Cockpit
+        url: "https://localhost:9090/system"
+        icon: "{{ ansible_facts.user_dir }}/.local/share/icons/cockpit.svg"
+      - name: Trello
+        url: "https://trello.com"
+        icon: "{{ ansible_facts.user_dir }}/.local/share/icons/trello.svg"
+      - name: DuckDuckGo
+        url: "https://duckduckgo.com/?q=ai"
+        icon: "{{ ansible_facts.user_dir }}/.local/share/icons/duckduckgo.svg"
+  loop: "{{ webapps }}"
+  # Using expect module to simulate interactive input
+  ansible.builtin.expect:
+    command: pwa
+    responses:
+      # Simulate selecting option 1 (Install a new PWA)
+      'Enter your choice': '1'
+      # Provide the app name
+      'Name of the application': '{{ item.name }}'
+      # Provide the app URL
+      'URL of the application': '{{ item.url }}'
+      # Provide the icon path
+      'Icon URL or file path': '{{ item.icon }}'
+      # Press Enter for default Browser Profile (optional)
+      'Browser Profile (optional)': ''
+    creates: "{{ ansible_facts.user_dir }}/.local/share/applications/{{ item.name }}.desktop"
+  no_log: true  # Hides any sensitive output
+
+# Task 5: Ensure required icon files exist (optional)
+- name: Verify icon files are present
+  ansible.builtin.stat:
+    path: "{{ item.icon }}"
+  loop: "{{ webapps }}"
+  register: icon_stat
+
+- name: Warn if icons are missing
+  ansible.builtin.debug:
+    msg: "Warning: Icon file {{ item.stat.path }} is missing!"
+  loop: "{{ icon_stat.results }}"
+  when: not item.stat.exists
+

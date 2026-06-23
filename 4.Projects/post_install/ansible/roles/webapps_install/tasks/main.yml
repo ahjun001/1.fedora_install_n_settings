@@ -1,4 +1,5 @@
 ---
+# //ansible/roles/webapps_install/tasks/main.yml
 # task file for webapps_install
 # Don´t use spaces in app_name , it will be used to create a directory, and then won't make the script idempotent
 # Every few months the system sends a message for the apps to be re-built.
@@ -34,43 +35,58 @@
       - name: Bard
         url: "https://bard.google.com/chat/3292a98e6af645e6"
         icon: ""
+        flags: ""
       - name: Bing_search
         url: "https://www.bing.com/search?q=Bing+AI&showconv=1"
         icon: ""
+        flags: ""
       - name: Cnrtl
         url: "https://cnrtl.fr/definition/"
         icon: ""
+        flags: ""
       - name: DeepAi
         url: "https://deepai.org/chat"
         icon: ""
+        flags: ""
       - name: GSearch
         url: "https://www.google.com.hk/?hl=en-US&fg=1"
         icon: ""
+        flags: ""
       - name: le_Conjugueur
         url: "https://leconjugueur.lefigaro.fr/"
         icon: ""
+        flags: ""
       - name: Test_my_speed
         url: "https://www.testmyspeed.com/"
+        flags: ""
         # icon: "/usr/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
         # icon: "/home/{{ansible_user}}/.local/share/icons/hicolor/scalable/apps/xyz.ketok.Speedtest.svg"
         icon: ""
       - name: Trello
         url: "{{ trello_weblink }}"
+        flags: ""
         icon: ""
       - name: WhatsApp
         url: "https://web.whatsapp.com/"
+        flags: ""
         icon: ""
       - name: YouTube
         url: "https://youtube.com/"
+        flags: ""
         icon: ""
+      - name: Cockpit  # New webapp with icon
+        url: "https://localhost:9090/system"
+        icon: ""
+        flags: "--ignore-certificate-errors"
+        nativefier_flags: "--nativefier-flag='--ozone-platform-hint=auto'"
   loop: "{{ webapp_urls }}"
   shell:
-    cmd: "cd ~/.local/bin && nativefier --name '{{ item.name }}' '{{ item.url }}' {{ item.icon | default('') }}"
+    cmd: "cd ~/.local/bin && nativefier --name '{{ item.name }}' '{{ item.url }}' {{ item.flags }} {{ item.nativefier_flags | default('') }} {{ item.icon | default('') }}"
     creates: "~/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}"
-
 - name: Create .desktop files for webapps
   become: false
   vars:
+    user_home: "{{ ansible_facts.user_dir }}"
     webapp_urls:
       - name: Bard
         url: "https://bard.google.com/chat/3292a98e6af645e6"
@@ -80,7 +96,7 @@
         icon: ""
       - name: TLFi
         url: "http://atilf.atilf.fr/"
-        icon: "/home/{{ansible_user}}/.local/share/icons/atilf.ico"
+        icon: "{{ user_home }}/.local/share/icons/atilf.ico"
       - name: DeepAi
         url: "https://deepai.org/chat"
         icon: ""
@@ -89,29 +105,32 @@
         icon: ""
       - name: le_Conjugueur
         url: "https://leconjugueur.lefigaro.fr/"
-        icon: "/home/{{ansible_user}}/.local/share/Le_conjugueur.png"
+        icon: "{{ user_home }}/.local/share/Le_conjugueur.png"
       - name: Test_my_speed
         url: "https://www.testmyspeed.com/"
         icon: ""
       - name: Trello
         url: "{{ trello_weblink }}"
-        icon: "/home/{{ansible_user}}/.local/share/icons/trello-icon.svg"
+        icon: "{{ user_home }}/.local/share/icons/trello-icon.svg"
       - name: WhatsApp
         url: "https://web.whatsapp.com/"
-        icon: "/home/{{ansible_user}}/.local/share/icons/whatsapp-tile.svg"
+        icon: "{{ user_home }}/.local/share/icons/whatsapp-tile.svg"
       - name: YouTube
         url: "https://youtube.com/"
-        icon: "/home/{{ansible_user}}/.local/share/icons/youtube-icon.svg"
+        icon: "{{ user_home }}/.local/share/icons/youtube-icon.svg"
+      - name: Cockpit  # New webapp
+        url: "https://localhost:9090/system"
+        icon: "{{ user_home }}/.local/share/icons/cockpit.svg"
   loop: "{{ webapp_urls }}"
-  copy:
+  ansible.builtin.copy:
     content: |
       [Desktop Entry]
       Version=1.0
       Type=Application
       Name={{ item.name }}
-      Exec={{ ansible_user_dir }}/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}
+      Exec={{ user_home }}/.local/bin/{{ item.name }}-linux-x64/{{ item.name }}
       Icon={{ item.icon | default('') }}
       Categories=Network;WebBrowser;
       Terminal=false
-    dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item.name }}.desktop"
+    dest: "{{ user_home }}/.local/share/applications/{{ item.name }}.desktop"
     mode: "0644"
