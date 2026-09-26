@@ -1,8 +1,6 @@
 ---
 # ./roles/pwa-mgr-apps/tasks/main.yml
 # task file for pwa-mgr-apps
----
-# tasks file for pwa-mgr-apps
 
 # Task 1: Install git (if not already installed)
 - name: Ensure git is installed
@@ -26,7 +24,7 @@
       cd /tmp/pwa-manager
       chmod +x install.sh
       ./install.sh
-    creates: /opt/pwa  # idempotency check
+    creates: /opt/pwa # idempotency check
 
 # Task 4: Install webapps using pwa-manager
 - name: Install webapps with pwa-manager
@@ -47,17 +45,17 @@
     command: pwa
     responses:
       # Simulate selecting option 1 (Install a new PWA)
-      'Enter your choice': '1'
+      "Enter your choice": "1"
       # Provide the app name
-      'Name of the application': '{{ item.name }}'
+      "Name of the application": "{{ item.name }}"
       # Provide the app URL
-      'URL of the application': '{{ item.url }}'
+      "URL of the application": "{{ item.url }}"
       # Provide the icon path
-      'Icon URL or file path': '{{ item.icon }}'
+      "Icon URL or file path": "{{ item.icon }}"
       # Press Enter for default Browser Profile (optional)
-      'Browser Profile (optional)': ''
+      "Browser Profile (optional)": ""
     creates: "{{ ansible_facts.user_dir }}/.local/share/applications/{{ item.name }}.desktop"
-  no_log: true  # Hides any sensitive output
+  no_log: false # Hides / shows any sensitive output
 
 # Task 5: Ensure required icon files exist (optional)
 - name: Verify icon files are present
@@ -71,4 +69,3 @@
     msg: "Warning: Icon file {{ item.stat.path }} is missing!"
   loop: "{{ icon_stat.results }}"
   when: not item.stat.exists
-
